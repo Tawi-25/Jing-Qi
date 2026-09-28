@@ -171,6 +171,13 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
 .insight-row .insight-card{flex:1}
 .insight-line{font-size:12px;color:#6b6878;line-height:1.5;margin-top:4px;padding:8px;background:rgba(212,163,115,0.06);border-radius:10px;text-align:center}
 .flare-count{font-size:12px;color:#d98282;margin-top:6px;text-align:center}
+/* === PHASE -1 CLINICAL TRACKER === */
+.phase-card{background:rgba(30,27,45,0.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:16px;padding:18px;margin-bottom:12px}
+.phase-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;flex-wrap:wrap}
+.phase-num{width:62px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(30,27,45,0.6);color:#e4e0e8;font-family:system-ui,sans-serif;font-size:14px;text-align:center;outline:none;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.phase-num:focus{border-color:rgba(212,163,115,0.25)}
+.phase-num::-webkit-outer-spin-button,.phase-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.phase-dot{width:8px;height:8px;border-radius:50%;background:#3a3748;flex:0 0 auto;transition:background 0.3s ease}
 /* === RESPONSIVE === */
 @media(min-width:480px){#app{border-left:1px solid rgba(255,255,255,0.03);border-right:1px solid rgba(255,255,255,0.03)}}
 @media(max-height:640px){
@@ -210,6 +217,31 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
         <div class="checkin-row" id="sleep-stars"></div>
         <div class="checkin-label" style="margin-top:12px">Energy Level</div>
         <div class="checkin-row" id="energy-bolts"></div>
+      </div>
+
+      <div class="card phase-card" id="phase-card">
+        <h2>Phase -1 &middot; Adductor &amp; Ankle</h2>
+        <div class="phase-row">
+          <div class="subtitle" style="margin:0">10 min &middot; Evening</div>
+          <span class="phase-dot" id="phase-dot" title="Phase -1 not completed today"></span>
+        </div>
+        <div class="phase-row">
+          <div class="checkin-label" style="margin:0;text-align:left">Sleep Hours</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button class="btn btn-secondary btn-sm" id="phase-sleep-minus" aria-label="Decrease sleep hours">−</button>
+            <input class="phase-num" id="phase-sleep-input" type="number" min="4" max="10" step="0.5" inputmode="decimal" value="7.5" aria-label="Sleep hours">
+            <button class="btn btn-secondary btn-sm" id="phase-sleep-plus" aria-label="Increase sleep hours">+</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="phase-start-btn" style="margin-top:14px">Start Phase -1</button>
+        <div class="phase-row" id="phase-ankle-row" style="display:none">
+          <div class="checkin-label" style="margin:0;text-align:left">Ankle re-test</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input class="phase-num" id="phase-ankle-left" type="number" min="0" max="15" step="0.1" inputmode="decimal" placeholder="Left cm" aria-label="Left ankle centimetres">
+            <input class="phase-num" id="phase-ankle-right" type="number" min="0" max="15" step="0.1" inputmode="decimal" placeholder="Right cm" aria-label="Right ankle centimetres">
+            <button class="btn btn-secondary btn-sm" id="phase-ankle-save">Save</button>
+          </div>
+        </div>
       </div>
 
       <div>
@@ -330,6 +362,24 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
     <div class="step-indicator" id="step-indicator">Exercise 1 of 3</div>
   </div>
 
+  <!-- PHASE -1 OVERLAY -->
+  <div class="overlay" id="phase-minus1-overlay">
+    <div class="exercise-name" id="phase1-name">Phase -1</div>
+    <div class="media-container" id="phase1-media-container">
+      <div class="media-loading" id="phase1-media-loading">◉</div>
+      <div class="media-fallback" id="phase1-media-fallback" style="display:none"></div>
+    </div>
+    <div class="instructions" id="phase1-instructions"></div>
+    <div class="timer" id="phase1-timer">01:00</div>
+    <div id="phase1-breath-area" style="text-align:center;min-height:140px"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="phase1-pause-btn">⏸</button>
+      <button class="btn btn-secondary" id="phase1-close-btn">✕</button>
+      <button class="btn btn-primary" id="phase1-next-btn">Next Exercise</button>
+    </div>
+    <div class="step-indicator" id="phase1-step-indicator">Exercise 1 of 6</div>
+  </div>
+
   <!-- BREATH PACER OVERLAY -->
   <div class="pacer-overlay" id="pacer-overlay">
     <div class="pacer-circle" id="pacer-circle"><span class="pacer-text" id="pacer-text">Inhale</span></div>
@@ -401,11 +451,18 @@ const CONFIG={
     {id:'supine-twist',name:'Supine Twist',routine:'evening',target:'Spine',equip:'Body weight',diff:'Beginner',load:'qi',description:'Lying spinal twist to release tension in the lower back.',gif:'',steps:['Lie on back, arms extended to sides','Bend knees, drop them to one side','Turn head in the opposite direction','Hold 30 seconds, switch sides']},
     {id:'hamstring-stretch',name:'Supine Hamstring Stretch',routine:'evening',target:'Hamstrings',equip:'Body weight',diff:'Beginner',load:'qi',description:'Lying stretch for the back of the legs.',gif:'',steps:['Lie on back, one leg extended, one leg raised','Hold behind the raised thigh or calf','Gently pull leg toward chest','Hold 30 seconds, switch sides']},
     {id:'piriformis',name:'Piriformis Stretch',routine:'evening',target:'Piriformis',equip:'Body weight',diff:'Beginner',load:'qi',description:'Figure-4 stretch for the deep gluteal muscles.',gif:'',steps:['Lie on back, both knees bent','Cross one ankle over the opposite knee','Gently pull the bottom leg toward you','Hold 30 seconds, switch sides']},
+    {id:'adductor-strap',name:'Supine Adductor Stretch',routine:'phase-minus1',target:'Adductors',equip:'Strap',diff:'Beginner',load:'qi',description:'Strap-assisted adductor release on the floor.',gif:'',steps:['Lie on back, loop strap around one foot','Let the leg fall out to the side, knee can be bent','Hold 45 seconds, breathing slowly','Switch sides']},
+    {id:'butterfly',name:'Supported Butterfly',routine:'phase-minus1',target:'Adductors',equip:'Cushions',diff:'Beginner',load:'qi',description:'Supported butterfly hold to open the inner hips.',gif:'',steps:['Sit with the soles of the feet together','Rest the knees on cushions so nothing strains','Let the spine soften and lengthen','Hold 60 seconds, breathing slowly']},
+    {id:'adductor-massage',name:'Adductor Self-Massage',routine:'phase-minus1',target:'Adductors',equip:'Hands',diff:'Beginner',load:'qi',description:'Slow self-massage along the inner thigh.',gif:'',steps:['Sit or lie with the inner thigh relaxed','Press gently along the adductor from knee toward groin','Work slowly, pausing on tender spots','60 seconds each side']},
+    {id:'knee-to-wall',name:'Knee-to-Wall',routine:'phase-minus1',target:'Ankle',equip:'Wall',diff:'Beginner',load:'qi',description:'Ankle dorsiflexion reps measured toward the wall.',gif:'',steps:['Kneel on one knee facing a wall, foot flat','Drive the knee forward toward the wall, heel down','Keep the foot straight, no arch collapse','15 reps each side']},
+    {id:'calf-straight',name:'Calf Stretch — Straight Leg',routine:'phase-minus1',target:'Calf',equip:'Wall',diff:'Beginner',load:'qi',description:'Straight-leg calf stretch for the gastrocnemius.',gif:'',steps:['Stand facing a wall, hands on the wall','Step one leg back, knee straight, heel down','Lean in until the calf lengthens','Hold 45 seconds each side']},
+    {id:'calf-bent',name:'Calf Stretch — Bent Knee',routine:'phase-minus1',target:'Calf',equip:'Wall',diff:'Beginner',load:'qi',description:'Bent-knee calf stretch to reach the soleus.',gif:'',steps:['Same stance as the straight-leg calf stretch','Bend the back knee while the heel stays down','Keep the hips facing forward','Hold 45 seconds each side']},
   ],
   routines:{
     midday:{label:'Sciatica Flow',time:'Midday · Strength & Stability',exercises:['cat-cow','pelvic-tilt','glute-bridge','bird-dog','dead-bug','clamshell','side-leg-lift'],load:'jing',loadPts:3},
     morning:{label:'The 5-Floor Ascent',time:'Morning · Gentle standing',exercises:['hip-circles','hip-flexor'],load:'qi',loadPts:1},
     evening:{label:'The Fascial Unwind',time:'Evening · Restorative floor',exercises:['oblique-release','supine-twist','hamstring-stretch','piriformis'],load:'qi',loadPts:0},
+    'phase-minus1':{label:'Phase -1 · Adductor & Ankle',time:'Evening · Clinical protocol · 10 min',exercises:['adductor-strap','butterfly','adductor-massage','knee-to-wall','calf-straight','calf-bent'],load:'qi',loadPts:0},
   },
   breathPatterns:[
     {name:'Box Breathing',inhale:4,hold1:4,exhale:4,hold2:4,cue:'Breathe in — 4   Hold — 4   Breathe out — 4   Hold — 4'},
@@ -1067,7 +1124,246 @@ function renderInsights(){
     }).join('')+'</div>')+
     '<div class="clear-history" style="margin-top:6px"><button id="clear-insights-btn" style="background:none;border:none;color:#4a4758;font-size:11px;cursor:pointer;font-family:system-ui,sans-serif">Clear history</button></div>';
   document.getElementById('clear-insights-btn')?.addEventListener('click',function(){if(history.length===0)return;if(confirm('Clear all recovery history?')){clearHistory();renderInsights()}});
+  renderPhaseInsights();
 }
+
+// === PHASE -1 CLINICAL TRACKER (additive — JQ-001) ===
+const PHASE1_ROUTINE_KEY='phase-minus1';
+function phaseDateKey(d){return (d||new Date()).toISOString().slice(0,10)}
+function isSunday(){return new Date().getDay()===0}
+function phaseWeekKeys(){const d=new Date(),s=new Date(d);s.setDate(d.getDate()-d.getDay());const out=[];for(let i=0;i<7;i++){const x=new Date(s);x.setDate(s.getDate()+i);out.push(phaseDateKey(x))}return out}
+
+// --- storage (mirrors the existing check-in storage shape: date-keyed records) ---
+function getSleepHours(dateKey){
+  const raw=localStorage.getItem('jing_sleep_hours_'+dateKey);
+  if(raw===null||raw==='')return null;
+  const n=parseFloat(raw);return isNaN(n)?null:n;
+}
+function setSleepHours(dateKey,value){
+  const n=parseFloat(value);
+  if(isNaN(n))return getSleepHours(dateKey);
+  const v=Math.min(10,Math.max(4,Math.round(n*2)/2));
+  localStorage.setItem('jing_sleep_hours_'+dateKey,String(v));
+  return v;
+}
+function getPhaseDone(dateKey){
+  try{const r=JSON.parse(localStorage.getItem('jing_phase_minus1_'+dateKey)||'null');return r&&typeof r==='object'?r:null}catch(e){return null}
+}
+function setPhaseDone(dateKey,rec){
+  if(!rec){localStorage.removeItem('jing_phase_minus1_'+dateKey);return}
+  localStorage.setItem('jing_phase_minus1_'+dateKey,JSON.stringify({done:!!rec.done,count:rec.count||0}));
+}
+function getAnkle(dateKey){
+  try{const r=JSON.parse(localStorage.getItem('jing_ankle_'+dateKey)||'null');return r&&typeof r==='object'?r:null}catch(e){return null}
+}
+function setAnkle(dateKey,rec){
+  if(!rec){localStorage.removeItem('jing_ankle_'+dateKey);return}
+  localStorage.setItem('jing_ankle_'+dateKey,JSON.stringify({left:rec.left,right:rec.right}));
+}
+function phaseStreakThisWeek(){let n=0;phaseWeekKeys().forEach(k=>{const r=getPhaseDone(k);if(r&&r.done)n++});return n}
+function phaseSleepAvg(days){
+  const n=days||7;let sum=0,cnt=0;
+  for(let i=0;i<n;i++){const d=new Date();d.setDate(d.getDate()-i);const v=getSleepHours(phaseDateKey(d));if(v!==null){sum+=v;cnt++}}
+  return cnt===0?'—':(Math.round((sum/cnt)*10)/10).toFixed(1);
+}
+
+// --- today card ---
+function renderPhaseCard(){
+  const today=phaseDateKey();
+  const sleepInput=document.getElementById('phase-sleep-input');
+  if(sleepInput&&document.activeElement!==sleepInput){
+    const saved=getSleepHours(today);
+    sleepInput.value=(saved===null?7.5:saved).toFixed(1);
+  }
+  const rec=getPhaseDone(today),done=!!(rec&&rec.done);
+  const dot=document.getElementById('phase-dot');
+  if(dot){
+    dot.style.background=done?'#6fb98f':'';
+    dot.title=done?('Phase -1 done today — '+((rec&&rec.count)||0)+'/6 items'):'Phase -1 not completed today';
+  }
+  const btn=document.getElementById('phase-start-btn');
+  if(btn)btn.textContent=done?'Repeat Phase -1':'Start Phase -1';
+  const row=document.getElementById('phase-ankle-row');
+  if(row){
+    if(isSunday()){
+      row.style.display='flex';
+      const a=getAnkle(today),l=document.getElementById('phase-ankle-left'),r=document.getElementById('phase-ankle-right');
+      if(l&&document.activeElement!==l&&a&&a.left!==null&&a.left!==undefined)l.value=String(a.left);
+      if(r&&document.activeElement!==r&&a&&a.right!==null&&a.right!==undefined)r.value=String(a.right);
+    }else{row.style.display='none'}
+  }
+}
+function phaseStepSleep(delta){
+  const input=document.getElementById('phase-sleep-input');if(!input)return;
+  const cur=parseFloat(input.value),base=isNaN(cur)?7.5:cur;
+  const v=Math.min(10,Math.max(4,Math.round((base+delta)*2)/2));
+  input.value=v.toFixed(1);
+  setSleepHours(phaseDateKey(),v);
+}
+function saveAnkleFromInputs(){
+  const l=document.getElementById('phase-ankle-left'),r=document.getElementById('phase-ankle-right');
+  if(!l||!r)return;
+  const lv=parseFloat(l.value),rv=parseFloat(r.value);
+  if(isNaN(lv)||isNaN(rv)){alert('Enter both left and right ankle measurements in cm.');return}
+  const cl=Math.min(15,Math.max(0,Math.round(lv*10)/10)),cr=Math.min(15,Math.max(0,Math.round(rv*10)/10));
+  setAnkle(phaseDateKey(),{left:cl,right:cr});
+  const btn=document.getElementById('phase-ankle-save');
+  if(btn){const t=btn.textContent;btn.textContent='Saved ✓';setTimeout(function(){btn.textContent=t},1400)}
+}
+// --- parallel minimal player for #phase-minus1-overlay (never touches routineState / pauseState) ---
+let phasePlayer={active:false,exercises:[],step:0,timerInterval:null,countdownInterval:null,timeRemaining:0,paused:false};
+const phaseOverlay=document.getElementById('phase-minus1-overlay'),
+      phaseNameEl=document.getElementById('phase1-name'),
+      phaseTimerEl=document.getElementById('phase1-timer'),
+      phaseBreathEl=document.getElementById('phase1-breath-area'),
+      phaseMediaLoading=document.getElementById('phase1-media-loading'),
+      phaseMediaFallback=document.getElementById('phase1-media-fallback'),
+      phaseInstructions=document.getElementById('phase1-instructions'),
+      phaseStepIndicator=document.getElementById('phase1-step-indicator'),
+      phaseNextBtn=document.getElementById('phase1-next-btn'),
+      phasePauseBtn=document.getElementById('phase1-pause-btn'),
+      phaseCloseBtn=document.getElementById('phase1-close-btn');
+
+function phaseMedia(exId){
+  const ex=CONFIG.exercises.find(e=>e.id===exId);
+  phaseMediaFallback.style.fontSize='';
+  phaseMediaLoading.style.display='block';phaseMediaFallback.style.display='none';phaseInstructions.textContent='';
+  if(!ex){phaseMediaLoading.style.display='none';phaseMediaFallback.style.display='block';phaseMediaFallback.textContent='Follow along with the timer.';return}
+  if(ex.steps&&ex.steps.length>0)phaseInstructions.textContent='Step: '+ex.steps.join(' · ');
+  phaseMediaLoading.style.display='none';
+  phaseMediaFallback.innerHTML=bodyDiagramMedia(exId);
+  phaseMediaFallback.style.display='block';
+}
+function phaseTimerDisplay(s){phaseTimerEl.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+
+function openPhaseMinus1(){
+  const routine=CONFIG.routines[PHASE1_ROUTINE_KEY];if(!routine)return;
+  phasePlayer.active=true;phasePlayer.paused=false;
+  phasePlayer.exercises=[...routine.exercises];
+  phasePauseBtn.textContent='⏸';phasePauseBtn.style.display='';
+  phaseOverlay.classList.add('active');
+  document.getElementById('main-content').style.display='none';document.querySelector('nav.bottom-nav').style.display='none';document.querySelector('header').style.display='none';
+  phaseShowExercise(0);
+}
+
+function phaseShowExercise(step){
+  if(phasePlayer.countdownInterval){clearInterval(phasePlayer.countdownInterval);phasePlayer.countdownInterval=null}
+  clearInterval(phasePlayer.timerInterval);phasePlayer.timerInterval=null;
+  phasePlayer.step=step;phasePlayer.paused=false;
+  const exId=phasePlayer.exercises[step],ex=CONFIG.exercises.find(e=>e.id===exId),label=ex?ex.name:'Movement';
+  phaseBreathEl.innerHTML='';phaseMedia(exId);
+  phaseStepIndicator.textContent='Exercise '+(step+1)+' of '+phasePlayer.exercises.length;
+  phaseNextBtn.textContent=(step===phasePlayer.exercises.length-1)?'Finish':'Next Exercise';
+  phasePauseBtn.style.display='none';
+  let count=3;
+  phaseNameEl.textContent='Prepare';
+  phaseBreathEl.innerHTML='<div style="font-size:48px;font-weight:275;color:#d4a373;text-align:center;padding:10px">'+count+'</div><div style="font-size:12px;color:#4a4758;text-align:center">Breathe slowly</div>';
+  phasePlayer.countdownInterval=setInterval(function(){
+    count--;
+    if(count>0){
+      phaseBreathEl.innerHTML='<div style="font-size:48px;font-weight:275;color:#d4a373;text-align:center;padding:10px">'+count+'</div><div style="font-size:12px;color:#4a4758;text-align:center">Breathe slowly</div>';
+      if(count===1)playBeep();
+    }else{
+      clearInterval(phasePlayer.countdownInterval);phasePlayer.countdownInterval=null;
+      vibrate();phasePauseBtn.style.display='';
+      phaseNameEl.textContent=label;phaseBreathEl.innerHTML='';
+      phaseStartTimer(CONFIG.exerciseDuration);
+    }
+  },800);
+}
+function phaseStartTimer(secs){
+  clearInterval(phasePlayer.timerInterval);
+  phasePlayer.timeRemaining=secs;phaseTimerDisplay(secs);
+  phasePlayer.timerInterval=setInterval(function(){
+    phasePlayer.timeRemaining--;
+    if(phasePlayer.timeRemaining<=0){
+      clearInterval(phasePlayer.timerInterval);phasePlayer.timerInterval=null;
+      playBeep();vibrate();
+      if(phasePlayer.step<phasePlayer.exercises.length-1)phaseShowExercise(phasePlayer.step+1);
+      else phaseCompleteRoutine();
+    }else phaseTimerDisplay(phasePlayer.timeRemaining);
+  },1000);
+}
+
+function phaseCompleteRoutine(){
+  clearInterval(phasePlayer.timerInterval);phasePlayer.timerInterval=null;
+  const routine=CONFIG.routines[PHASE1_ROUTINE_KEY];
+  const earned=(routine&&routine.loadPts)?routine.loadPts:0;
+  if(earned>0)setWeeklyLoad(getWeeklyLoad()+earned);
+  setPhaseDone(phaseDateKey(),{done:true,count:phasePlayer.exercises.length});
+  phasePlayer.active=false;phasePlayer.paused=false;
+  phaseNameEl.textContent='Phase -1 Complete';
+  phaseMediaLoading.style.display='none';
+  phaseMediaFallback.style.display='block';phaseMediaFallback.innerHTML='✦';phaseMediaFallback.style.fontSize='36px';
+  phaseInstructions.textContent='';
+  phaseTimerEl.textContent='✦';
+  phaseBreathEl.innerHTML='<p style="font-size:14px;color:#b8bdc7;line-height:1.6;max-width:300px">Adductor release and ankle mobility done for today. Consistency is what rebuilds capacity. See you tomorrow evening.</p>';
+  phaseNextBtn.textContent='Close';
+  phaseStepIndicator.textContent=earned>0?('+'+earned+' pts added to Weekly Essence'):'Restorative session complete — no load points';
+  renderPhaseCard();
+}
+
+function phaseTogglePause(){
+  if(!phasePlayer.active)return;
+  if(!phasePlayer.paused){
+    clearInterval(phasePlayer.timerInterval);phasePlayer.timerInterval=null;
+    phasePlayer.paused=true;phasePauseBtn.textContent='▶';
+    phaseNameEl.textContent='Paused';
+    phaseBreathEl.innerHTML='<div style="font-size:14px;color:#4a4758;text-align:center;padding:10px">Paused — Press ▶ to resume</div>';
+  }else{
+    phasePlayer.paused=false;phasePauseBtn.textContent='⏸';
+    const exId=phasePlayer.exercises[phasePlayer.step],ex=CONFIG.exercises.find(e=>e.id===exId);
+    phaseNameEl.textContent=ex?ex.name:'Movement';
+    phaseBreathEl.innerHTML='';
+    phaseStartTimer(phasePlayer.timeRemaining);
+  }
+}
+
+function phaseAdvance(){
+  if(!phasePlayer.active){phaseClose();return}
+  if(phasePlayer.paused)return;
+  if(phasePlayer.countdownInterval){clearInterval(phasePlayer.countdownInterval);phasePlayer.countdownInterval=null}
+  clearInterval(phasePlayer.timerInterval);phasePlayer.timerInterval=null;
+  if(phasePlayer.step<phasePlayer.exercises.length-1)phaseShowExercise(phasePlayer.step+1);
+  else phaseCompleteRoutine();
+}
+
+function phaseClose(){
+  clearInterval(phasePlayer.timerInterval);phasePlayer.timerInterval=null;
+  if(phasePlayer.countdownInterval){clearInterval(phasePlayer.countdownInterval);phasePlayer.countdownInterval=null}
+  phasePlayer.active=false;phasePlayer.paused=false;
+  phasePauseBtn.textContent='⏸';phasePauseBtn.style.display='';
+  phaseMediaFallback.style.fontSize='';
+  phaseOverlay.classList.remove('active');
+  document.getElementById('main-content').style.display='';document.querySelector('nav.bottom-nav').style.display='';document.querySelector('header').style.display='';
+  renderPhaseCard();updateLoadMeter();
+}
+// --- insights (appended below existing insight content) ---
+function renderPhaseInsights(){
+  const c=document.getElementById('insights-content');if(!c)return;
+  const old=document.getElementById('phase-insights-block');if(old)old.remove();
+  c.insertAdjacentHTML('beforeend',
+    '<div id="phase-insights-block" style="margin-top:10px">'+
+      '<div style="font-size:12px;color:#b8bdc7;margin-bottom:6px">Phase -1 Clinical</div>'+
+      '<div class="insight-row">'+
+        '<div class="insight-card"><div class="ic-value" style="font-size:20px">'+phaseStreakThisWeek()+' / 7</div><div class="ic-label">Phase -1 Streak</div></div>'+
+        '<div class="insight-card"><div class="ic-value" style="font-size:20px">'+phaseSleepAvg(7)+'</div><div class="ic-label">Sleep Avg (7 days)</div></div>'+
+      '</div>'+
+    '</div>');
+}
+
+// --- wiring ---
+document.getElementById('phase-start-btn').addEventListener('click',function(){openPhaseMinus1()});
+document.getElementById('phase-sleep-minus').addEventListener('click',function(){phaseStepSleep(-0.5)});
+document.getElementById('phase-sleep-plus').addEventListener('click',function(){phaseStepSleep(0.5)});
+document.getElementById('phase-sleep-input').addEventListener('change',function(){
+  const v=setSleepHours(phaseDateKey(),this.value);
+  this.value=(v===null?7.5:v).toFixed(1);
+});
+document.getElementById('phase-ankle-save').addEventListener('click',function(){saveAnkleFromInputs()});
+phasePauseBtn.addEventListener('click',function(){phaseTogglePause()});
+phaseCloseBtn.addEventListener('click',function(){phaseClose()});
+phaseNextBtn.addEventListener('click',function(){phaseAdvance()});
 
 // === WEB AUDIO BEEP ===
 let audioCtx=null;
@@ -1076,6 +1372,7 @@ function vibrate(){try{if(navigator.vibrate)navigator.vibrate(200)}catch(e){}}
 
 // === INIT ===
 renderCheckins();updateLoadMeter();updateStatus();renderAcupressure();renderLibrary();renderInsights();
+renderPhaseCard();
 
 // === SERVICE WORKER ===
 (function(){if(!('serviceWorker'in navigator))return;var c='jing-v3',gc='jing-gifs-v1',sw=`

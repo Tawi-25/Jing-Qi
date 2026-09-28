@@ -132,3 +132,24 @@
 - [ ] Routine personalization via soreness → body area mapping
 - [ ] JSON export
 - [ ] Encrypted cloud backup (future)
+
+## Session 3 (9/28/2026)
+
+### Sprint 6 — JQ-001: Phase -1 Clinical Tracker
+- [x] Phase -1 card added to Today view (sleep hours stepper, phase completion dot, Sunday-only ankle re-test)
+- [x] #phase-minus1-overlay with 6-exercise guided flow reusing the routine player
+- [x] 6 new CONFIG.exercises records (adductor + ankle protocol)
+- [x] CONFIG.routines['phase-minus1'] (loadPts: 0)
+- [x] New localStorage keys: jing_sleep_hours_<date>, jing_phase_minus1_<date>, jing_ankle_<date>
+- [x] Insights tab extended with Phase -1 streak + Sleep avg cards
+- [x] Baseline hash before/after in commit body
+- [x] Manual matrix results (table)
+- Next: JQ-002 — assess whether to fold rescue.html into index.html under Vite, or continue with Live Server + separate Vite demo
+
+#### JQ-001 implementation notes
+- Additive only. `git diff --stat` vs baseline `3948e2d` = **297 insertions, 0 deletions**. No existing view, overlay, storage key, timer or CSS rule was renamed, restructured or removed.
+- The existing routine player is **not** fully generic: `openRoutine` / `showExercise` / `startTimer` / `closeRoutine` are hard-bound to the `#routine-overlay` module-level DOM refs plus `routineState` / `pauseState` / `CONFIG._adjustedLoad`. Per the JQ-001 constraint the new routine therefore uses a **parallel minimal player** for `#phase-minus1-overlay`, with its own state (`phasePlayer`) and its own DOM refs (`phase1-*`). It never reads or writes `routineState`, `pauseState`, `CONFIG._adjustedLoad` or `jing_routine_step` (verified by snapshot comparison).
+- Phase -1 flow: 3-2-1 countdown, then `CONFIG.exerciseDuration` (60s) per exercise, pause/resume, next/skip, auto-advance, completion screen. No rest/breath phase and no mid-flow resume — the phase record is written only on completion.
+- Phase -1 completion writes only the three new keys and deliberately does **not** append to `jing_history`, so the existing Insights chart, session list and monthly load stats remain equivalent.
+- New CSS is limited to `.phase-card`, `.phase-row`, `.phase-num`, `.phase-dot`; every other element reuses existing classes (`.card`, `.subtitle`, `.checkin-label`, `.btn`, `.btn-primary`, `.btn-secondary`, `.btn-sm`, `.overlay`, `.timer`, `.instructions`, `.step-indicator`, `.insight-row`, `.insight-card`, `.ic-value`, `.ic-label`).
+- Side effect of D4: the 6 new records also appear in the Library "All" list (Library renders every `CONFIG.exercises` entry) — additive content, no existing entry changed.
