@@ -192,3 +192,52 @@
 | B3 switch beep 660 Hz → 528 Hz (and matching envelope) | switch beep measured [528 Hz]/[0.15] identical to end beep [528 Hz]/[0.15] → indistinguishable by ear | GREEN (measured) |
 | B4 restore | hash `976aad78971f007fcc77304496e6a861debbb029` == pre-break hash (byte-identical) | GREEN |
 
+### Sprint 7 — JQ-002: routine sync to designed protocol
+- [x] 13 new exercise records (morning mobility + evening restorative + breathing)
+- [x] Morning routine: 9 items (was 2)
+- [x] Evening routine: 7 items (was 4)
+- [x] New 'breathing' routine + Guided Breathing card on Recover tab
+- [x] Main player now reads per-exercise `duration`, falls back to `CONFIG.exerciseDuration`
+- [x] Phase -1 unchanged
+- [x] Midday routine unchanged
+- [x] Manual matrix results (table)
+- [x] Baseline hash before/after in commit body
+
+#### JQ-002 implementation notes
+- Content-additive + one generic player line: `git diff --stat` vs baseline `976aad7` = **27 insertions, 3 deletions** (the 3 deletions are exactly the replaced morning `exercises` line, the replaced evening `exercises` line, and the replaced `startTimer` line in `showExercise`). No other line in the file was touched.
+- 13 records appended to the **end** of `CONFIG.exercises`, same shape as existing records plus the new numeric `duration` (seconds): knees-to-chest-single 30, knees-to-chest-double 30, thoracic-rotation 60, quad-set 60, terminal-knee-extension 60, straight-leg-raise 60, ankle-pumps 45, constructive-rest 180, legs-up-wall 180, side-lying-rest 120, four-eight-breath 120, vagal-humming 180, body-scan 300.
+- D3: new routine key `breathing` (label "Guided Breathing", loadPts 0) + one new Recover-tab card in a new `Guided Breathing` section placed **above** Flare-Up, reusing the existing `.recover-section` / `.recover-card` / `.rc-icon` / `.rc-title` / `.rc-desc` classes — **no new CSS**. Handler mirrors the existing pattern: `document.getElementById('open-guided-breathing').addEventListener('click',function(){openRoutine('breathing')});`
+- D4 / constraint 6 — the only main-player change, one line in `showExercise`:
+  - before: `showCountdown(function(){startTimer(CONFIG.exerciseDuration,'exercise');});`
+  - after:  `showCountdown(function(){const d=ex&&typeof ex.duration==='number'?ex.duration:0;startTimer(d>0?d:CONFIG.exerciseDuration,'exercise');});`
+  Legacy records without `duration` (cat-cow, piriformis, oblique-release, supine-twist and all midday records) keep 01:00 via the fallback; Phase -1's parallel player is untouched.
+- D1/D6: Phase -1 keeps its own card, overlay and parallel player; its 6 records and their `duration`/`switchAt` values are unchanged (90/45, 60, 120/60, 60/30, 90/45, 90/45).
+- D2: routine keys unchanged (morning/midday/evening) and the status-pill mapping is unchanged (Green→midday, Yellow→morning, Red→evening). Only the Yellow/Red card **copy** now reflects the new routine labels/times.
+- D7: every storage key (`jing_history`, `jing_weekly_load_*`, `jing_routine_step`, `jing_checkins_*`, `jing_flares_*`, `jing_sleep_hours_*`, `jing_phase_minus1_*`, `jing_ankle_*`), every timer, CSS rule and function name is unchanged — verified by re-seeding all 8 legacy keys, reloading, and confirming each is re-read with no console output.
+- Known consequence (pre-existing mechanism, **not** changed — constraint 6): `openRoutine` sets `routineState.routineLoadPts=CONFIG._adjustedLoad||routine.loadPts`. With a Green recommendation the label is +3 pts, so completing the loadPts:0 Guided Breathing routine credits **+3** pts and logs a `jing_history` row "Guided Breathing / 3". Before JQ-002 no loadPts:0 routine was reachable through the main player, so this is newly visible; flagged as a follow-up candidate (JQ-003), deliberately not fixed here.
+- Boot-time `jing_routine_step` resume is unchanged: a partially-completed routine resumes at the saved index, so the "Exercise 1 of N" counts below were measured with that key cleared.
+
+#### JQ-002 manual matrix (http://localhost:5500/rescue.html, no query string; automated Chromium session against the exact file, plus developer phone walk)
+| Check | Expected | Result |
+|-------|----------|--------|
+| Morning routine (Yellow pill) | 9 exercises, "Exercise 1 of 9" | PASS — soreness 5 → Yellow → "The 5-Floor Ascent", "Exercise 1 of 9" |
+| Exercise 1 knees-to-chest-single | Timer 00:30 | PASS — 00:30 |
+| Exercise 4 cat-cow | Timer 01:00 | PASS — 01:00 (legacy record, fallback) |
+| Exercise 9 ankle-pumps | Timer 00:45 | PASS — 00:45 |
+| Evening routine (Red pill) | 7 exercises | PASS — soreness 9 → Red → "The Fascial Unwind", "Exercise 1 of 7", Exercise 7 body-scan 05:00 |
+| Exercise 1 constructive-rest | Timer 03:00 | PASS — 03:00 |
+| Breathing card on Recover tab | Present, opens overlay | PASS — rendered above Flare-Up (section order: Breathing > Guided Breathing > Flare-Up > …), opens the overlay |
+| Breathing routine | 3 exercises, timers 02:00 / 03:00 / 05:00 | PASS — "Guided Breathing", 1 of 3 / 2 of 3 / 3 of 3, 02:00 / 03:00 / 05:00 |
+| Midday routine (Green pill) | Still 7 exercises, 01:00 each | PASS — soreness 1 → Green → "Sciatica Flow", 1 of 7, 01:00 |
+| Phase -1 card on Today | Unchanged, still works | PASS — card + green dot "Phase -1 done today — 1/6 items", overlay "Supine Adductor Stretch" 01:30, 6 records unchanged |
+| Library "All" | 6 Phase -1 + 13 new + 13 pre-existing | PASS — 32 cards |
+| Existing storage | No errors in console, prior keys intact | PASS — 8 seeded legacy keys all re-read, init re-run clean, 0 errors / 0 console warnings |
+
+#### JQ-002 falsifiability (sequential breaks, one break live at a time, fresh page load per break)
+| Break | Observable state | Verdict |
+|-------|------------------|---------|
+| B1 remove `duration:30` from knees-to-chest-single | `hasOwnProperty('duration')` false → Exercise 1 shows 01:00 (fallback), not 00:30; control Exercise 9 still 00:45 | GREEN |
+| B2 remove 'ankle-pumps' from morning.exercises | morning list length 8 → "Exercise 1 of 8" | GREEN |
+| B3 remove the `breathing` key from CONFIG.routines | card click is a dead no-op (`openRoutine` returns at `if(!routine)return;`), overlay never activates, no throw | GREEN |
+| B4 restore | hash `93821d2ad81f4f188155a9579ffe9a60d77d3bf5` == pre-break hash (byte-identical, 104,961 bytes) | GREEN |
+

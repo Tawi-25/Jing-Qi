@@ -292,6 +292,15 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
         </div>
 
         <div class="recover-section">
+          <h3>Guided Breathing</h3>
+          <div class="recover-card" id="open-guided-breathing">
+            <div class="rc-icon">◌</div>
+            <div class="rc-title">Guided Breathing</div>
+            <div class="rc-desc">4-8 breath · Vagal humming · Body scan — 8 minutes</div>
+          </div>
+        </div>
+
+        <div class="recover-section">
           <h3>Flare-Up</h3>
           <div class="recover-card flare-btn" id="open-flare-up">
             <div class="rc-icon">⚠</div>
@@ -457,11 +466,25 @@ const CONFIG={
     {id:'knee-to-wall',name:'Knee-to-Wall',routine:'phase-minus1',target:'Ankle',equip:'Wall',diff:'Beginner',load:'qi',duration:60,switchAt:30,description:'Ankle dorsiflexion reps measured toward the wall.',gif:'',steps:['Kneel on one knee facing a wall, foot flat','Drive the knee forward toward the wall, heel down','Keep the foot straight, no arch collapse','15 reps each side']},
     {id:'calf-straight',name:'Calf Stretch — Straight Leg',routine:'phase-minus1',target:'Calf',equip:'Wall',diff:'Beginner',load:'qi',duration:90,switchAt:45,description:'Straight-leg calf stretch for the gastrocnemius.',gif:'',steps:['Stand facing a wall, hands on the wall','Step one leg back, knee straight, heel down','Lean in until the calf lengthens','Hold 45 seconds each side']},
     {id:'calf-bent',name:'Calf Stretch — Bent Knee',routine:'phase-minus1',target:'Calf',equip:'Wall',diff:'Beginner',load:'qi',duration:90,switchAt:45,description:'Bent-knee calf stretch to reach the soleus.',gif:'',steps:['Same stance as the straight-leg calf stretch','Bend the back knee while the heel stays down','Keep the hips facing forward','Hold 45 seconds each side']},
+    {id:'knees-to-chest-single',name:'Knees to Chest (Single)',routine:'morning',target:'Lower Back',equip:'Body weight',diff:'Beginner',load:'qi',duration:30,description:'Supine single-knee pull to decompress the lumbar spine.',gif:'',steps:['Lie on back, knees bent, feet flat','Pull one knee toward chest, holding the shin','Keep the other foot flat on the floor','Hold 30 seconds, switch sides']},
+    {id:'knees-to-chest-double',name:'Knees to Chest (Double)',routine:'morning',target:'Lower Back',equip:'Body weight',diff:'Beginner',load:'qi',duration:30,description:'Supine double-knee pull for lumbar decompression.',gif:'',steps:['Lie on back','Pull both knees toward chest, holding the shins','Let the tailbone lift slightly off the floor','Hold 30 seconds, breathing slowly']},
+    {id:'thoracic-rotation',name:'Thoracic Rotation (Open Book)',routine:'morning',target:'Thoracic Spine',equip:'Body weight',diff:'Beginner',load:'qi',duration:60,description:'Side-lying open-book rotation for the mid-back.',gif:'',steps:['Lie on side, knees bent, arms straight in front','Open the top arm like a book toward the floor','Follow the hand with your eyes','Hold 2 breaths, return. 8 reps per side']},
+    {id:'quad-set',name:'Quad Set',routine:'morning',target:'Knee (VMO)',equip:'Body weight',diff:'Beginner',load:'qi',duration:60,description:'Seated isometric quad activation.',gif:'',steps:['Sit with the leg extended, knee supported','Press the back of the knee down into the floor or a towel','Hold 5 seconds, release. 10 reps each leg']},
+    {id:'terminal-knee-extension',name:'Terminal Knee Extension',routine:'morning',target:'Knee',equip:'Body weight',diff:'Beginner',load:'qi',duration:60,description:'End-range knee extension for quad control.',gif:'',steps:['Stand with a slight bend in the working knee','Straighten the knee fully, squeezing the quad','Hold 2 seconds, lower slowly','10 reps each leg']},
+    {id:'straight-leg-raise',name:'Straight Leg Raise',routine:'morning',target:'Quad / Hip Flexor',equip:'Body weight',diff:'Beginner',load:'qi',duration:60,description:'Supine straight-leg raise with the knee locked.',gif:'',steps:['Lie on back, one leg straight, other knee bent','Tighten the quad and lift the straight leg 12 inches','Hold 2 seconds, lower slowly','10 reps each leg']},
+    {id:'ankle-pumps',name:'Ankle Pumps',routine:'morning',target:'Ankle / Circulation',equip:'Body weight',diff:'Beginner',load:'qi',duration:45,description:'Point-and-flex ankle motion for circulation.',gif:'',steps:['Lie on back or sit, legs extended','Point both feet away from you, then flex toward you','Move slowly through the full range','20 reps total, or 45 seconds']},
+    {id:'constructive-rest',name:'Constructive Rest',routine:'evening',target:'Full Body Relaxation',equip:'Floor',diff:'Beginner',load:'qi',duration:180,description:'Supine rest with knees bent, hands on belly or ribs.',gif:'',steps:['Lie on back, knees bent, feet flat hip-width','Rest hands on belly or lower ribs','Let the whole body soften into the floor','Breathe slowly for 3 minutes']},
+    {id:'legs-up-wall',name:'Legs Up The Wall',routine:'evening',target:'Circulation / Calm',equip:'Wall',diff:'Beginner',load:'qi',duration:180,description:'Passive inversion to drain legs and calm the system.',gif:'',steps:['Sit sideways next to a wall','Swing legs up the wall as you lie back','Hips can be close to or a few inches from the wall','Breathe slowly for 3 minutes']},
+    {id:'side-lying-rest',name:'Side-Lying Rest',routine:'evening',target:'Full Body Relaxation',equip:'Floor',diff:'Beginner',load:'qi',duration:120,description:'Restorative side-lying position with a pillow between knees.',gif:'',steps:['Lie on the less-affected side','Pillow between knees, pillow under head','Bottom arm extended, top arm resting','Breathe slowly for 2 minutes']},
+    {id:'four-eight-breath',name:'4-8 Breath',routine:'breathing',target:'Nervous System',equip:'None',diff:'Beginner',load:'qi',duration:120,description:'Extended-exhale breathing to shift into parasympathetic.',gif:'',steps:['Inhale through the nose for 4 counts','Exhale through the mouth for 8 counts','Belly rises on inhale, falls on exhale','10 rounds (about 2 minutes)']},
+    {id:'vagal-humming',name:'Vagal Humming',routine:'breathing',target:'Vagus Nerve / Fascia',equip:'None',diff:'Beginner',load:'qi',duration:180,description:'Low hum on the exhale to vibrate the vagus nerve.',gif:'',steps:['Sit or lie with a neutral spine','Inhale through the nose for 4 counts','Exhale with a low, sustained "mmmmmm" hum, 6-8 counts','Feel the vibration in the chest and throat. 8 rounds']},
+    {id:'body-scan',name:'Body Scan',routine:'breathing',target:'Proprioception',equip:'None',diff:'Beginner',load:'qi',duration:300,description:'Attention moving through the body, feet to head.',gif:'',steps:['Lie down, eyes closed','Move attention slowly through the body: feet, calves, thighs, hips','Then sacrum, low back, mid back, ribs, chest, shoulders','Arms, hands, neck, jaw, forehead. 5 minutes total']},
   ],
   routines:{
     midday:{label:'Sciatica Flow',time:'Midday · Strength & Stability',exercises:['cat-cow','pelvic-tilt','glute-bridge','bird-dog','dead-bug','clamshell','side-leg-lift'],load:'jing',loadPts:3},
-    morning:{label:'The 5-Floor Ascent',time:'Morning · Gentle standing',exercises:['hip-circles','hip-flexor'],load:'qi',loadPts:1},
-    evening:{label:'The Fascial Unwind',time:'Evening · Restorative floor',exercises:['oblique-release','supine-twist','hamstring-stretch','piriformis'],load:'qi',loadPts:0},
+    morning:{label:'The 5-Floor Ascent',time:'Morning · Floor mobility + activation',exercises:['knees-to-chest-single','knees-to-chest-double','piriformis','cat-cow','thoracic-rotation','quad-set','terminal-knee-extension','straight-leg-raise','ankle-pumps'],load:'qi',loadPts:1},
+    evening:{label:'The Fascial Unwind',time:'Evening · Restorative floor',exercises:['constructive-rest','legs-up-wall','side-lying-rest','oblique-release','supine-twist','four-eight-breath','body-scan'],load:'qi',loadPts:0},
+    breathing:{label:'Guided Breathing',time:'Any time · Nervous system',exercises:['four-eight-breath','vagal-humming','body-scan'],load:'qi',loadPts:0},
     'phase-minus1':{label:'Phase -1 · Adductor & Ankle',time:'Evening · Clinical protocol · 10 min',exercises:['adductor-strap','butterfly','adductor-massage','knee-to-wall','calf-straight','calf-bent'],load:'qi',loadPts:0},
   },
   breathPatterns:[
@@ -805,7 +828,7 @@ function showExercise(step){
   nextBtn.textContent=(step===routineState.exercises.length-1)?'Finish':'Next Exercise';
   clearSavedStep();
   // Show 3-2-1 countdown before starting timer
-  showCountdown(function(){startTimer(CONFIG.exerciseDuration,'exercise');});
+  showCountdown(function(){const d=ex&&typeof ex.duration==='number'?ex.duration:0;startTimer(d>0?d:CONFIG.exerciseDuration,'exercise');});
 }
 
 function startTimer(secs,type){
@@ -966,6 +989,7 @@ function stopPacer(){
 let flareState={active:false,phase:0,timerInterval:null,timeRemaining:0};
 const flareOverlay=document.getElementById('flare-overlay'),flareTitle=document.getElementById('flare-title'),flareText=document.getElementById('flare-text'),flareTimer=document.getElementById('flare-timer'),flareProgress=document.getElementById('flare-progress'),flareMedia=document.getElementById('flare-media'),flareNext=document.getElementById('flare-next'),flareExit=document.getElementById('flare-exit');
 
+document.getElementById('open-guided-breathing').addEventListener('click',function(){openRoutine('breathing')});
 document.getElementById('open-flare-up').addEventListener('click',function(){openFlare()});
 flareNext.addEventListener('click',function(){flareNextPhase()});
 flareExit.addEventListener('click',function(){closeFlare()});
