@@ -792,7 +792,7 @@ function openRoutine(routineKey){
   const startStep=(saved>0&&saved<exercises.length)?saved:0;
   routineState.active=true;routineState.exercises=exercises;routineState.currentStep=startStep;
   routineState.isRest=false;routineState.breathInterval=null;routineState.routineName=routine.label;
-  routineState.routineLoadPts=CONFIG._adjustedLoad||routine.loadPts;
+  routineState.routineLoadPts=routine.loadPts===0?0:(CONFIG._adjustedLoad||routine.loadPts);
   CONFIG._breathIndex=0;
   overlay.classList.add('active');
   document.getElementById('main-content').style.display='none';document.querySelector('nav.bottom-nav').style.display='none';document.querySelector('header').style.display='none';

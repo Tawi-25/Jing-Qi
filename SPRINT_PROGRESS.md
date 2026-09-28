@@ -241,3 +241,42 @@
 | B3 remove the `breathing` key from CONFIG.routines | card click is a dead no-op (`openRoutine` returns at `if(!routine)return;`), overlay never activates, no throw | GREEN |
 | B4 restore | hash `93821d2ad81f4f188155a9579ffe9a60d77d3bf5` == pre-break hash (byte-identical, 104,961 bytes) | GREEN |
 
+### Sprint 7a — JQ-002a: load credit for loadPts:0 routines
+- [x] openRoutine now returns 0 load for routines with loadPts:0
+- [x] Soreness override (_adjustedLoad) applies only to non-zero routines
+- [x] Manual matrix results (table)
+- [x] Baseline hash before/after in commit body
+
+#### JQ-002a implementation notes
+- One-line change, the only edit in the file (`git diff --stat` vs `d806b5c` = **1 insertion, 1 deletion**), at the `openRoutine` load-credit expression:
+  - before: `  routineState.routineLoadPts=CONFIG._adjustedLoad||routine.loadPts;`
+  - after:  `  routineState.routineLoadPts=routine.loadPts===0?0:(CONFIG._adjustedLoad||routine.loadPts);`
+  (semantically identical to D1; whitespace matches the file's existing dense style, no surrounding code reformatted)
+- D4 confirmed by reading the code: `CONFIG._adjustedLoad` has exactly one write (L700) and one read (L795). The write sits in the **else**-branch of `if(routine.loadPts===0)` in `updateStatus()` and stores `getAdjustedLoad(routine.loadPts,sVal)` — i.e. it is only ever produced for a **non-zero** recommended routine, and it *should* override that non-zero load (soreness >=7 -> base+1). D1 preserves that exactly; it only forces `loadPts===0` to 0.
+- Why the leak existed: on Red days the recommended routine is `evening` (loadPts 0), so `updateStatus()` takes the "Restorative" branch and **never writes** `_adjustedLoad`; the variable therefore keeps a **stale** value from an earlier Green/Yellow render (measured: stale `1` while the Red pill was displayed -> old code credited 1 pt for Evening). JQ-002 made this reachable by exposing the loadPts:0 breathing routine and the evening routine through the main player.
+- Downstream: `completeRoutine()` already guards with `if(loadEarned>0){...setWeeklyLoad(c+loadEarned)}` (L871), so 0 now skips the weekly-load write entirely and `addHistoryEntry` logs `load: 0`; the completion line reads "Restorative session complete" instead of "+N pts added".
+- Phase -1 is untouched (constraint 4): `phaseCompleteRoutine()` (L1346) derives `earned` from `CONFIG.routines['phase-minus1'].loadPts` only and never reads `_adjustedLoad`; its overlay, card, records, durations, switch alerts and storage keys are byte-identical.
+- No new functions, no new CSS, no new storage keys, no DOM changes.
+- Pre-existing behaviour deliberately preserved (candidate for JQ-003): the override is derived from the **recommended** routine, not the opened one, so on a Green day (`_adjustedLoad=3`) completing *Morning* credits 3 rather than its own 1. Measured both ways (Green: +3, Yellow: +1) and left unchanged per D1/D4.
+
+#### JQ-002a manual matrix (http://localhost:5500/rescue.html, no query string; automated Chromium session against the exact file, plus developer phone walk)
+| Check | Expected | Result |
+|-------|----------|--------|
+| Set status to Green (soreness 1-3) | Pill shows Green | PASS — soreness 2 tapped → "status-pill green", "Yang Day — Move Qi", `_adjustedLoad`=3 |
+| Complete Guided Breathing | Weekly load does NOT change | PASS — delta 0, meter stays "10 / 20 pts", history "Guided Breathing/0" |
+| Complete Evening | Weekly load does NOT change | PASS — delta 0, history "The Fascial Unwind/0" |
+| Complete Morning | Weekly load increases by 1 (or adjusted value) | PASS — +3 on Green (adjusted), +1 on Yellow |
+| Complete Midday | Weekly load increases by 3 (or adjusted) | PASS — +3 on Green |
+| Phase -1 completion | Weekly load does NOT change (already true) | PASS — delta 0, no history entry |
+| History log | Breathing and Evening entries show load: 0 | PASS — "The Fascial Unwind -> load:0 \| Guided Breathing -> load:0" |
+| Yellow day (soreness 5) — Breathing / Evening / Morning | 0 / 0 / +1 | PASS — 0 / 0 / 1 |
+| Red day (soreness 9, stale `_adjustedLoad`=1) — Evening / Breathing | 0 / 0 | PASS — 0 / 0 (stale override no longer reaches loadPts:0 routines) |
+| Console | no errors | PASS — 0 errors, 0 warnings across the whole session |
+
+#### JQ-002a falsifiability (sequential breaks, one break live at a time, fresh page load per break)
+| Break | Observable state | Verdict |
+|-------|------------------|---------|
+| B1 revert to `CONFIG._adjustedLoad\|\|routine.loadPts` | Guided Breathing +3 and Evening +3 on a Green day, history "Guided Breathing/3" / "The Fascial Unwind/3" | GREEN |
+| B2 over-correct: `routineState.routineLoadPts=0` always | Morning 0 and Midday 0 ("Restorative session complete", history load:0) — over-correction observable | GREEN |
+| B3 restore | hash `0f4ede3c3c37187f490e5fea914058984aea3689` == pre-break hash (byte-identical) | GREEN |
+
