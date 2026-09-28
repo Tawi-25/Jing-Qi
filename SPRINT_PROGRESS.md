@@ -280,3 +280,68 @@
 | B2 over-correct: `routineState.routineLoadPts=0` always | Morning 0 and Midday 0 ("Restorative session complete", history load:0) — over-correction observable | GREEN |
 | B3 restore | hash `0f4ede3c3c37187f490e5fea914058984aea3689` == pre-break hash (byte-identical) | GREEN |
 
+### Sprint 8 — JQ-003: illustrations + rename + load fix
+- [x] rescue.html renamed to index.html (app is now the Vite entry)
+- [x] Old Vite demo preserved at demo/dead-bug.html + demo/dead-bug.js
+- [x] @bryllim/workout-guide CDN animations wired for 12 mapped exercises via dynamic import; graceful fallback if CDN is unavailable
+- [x] Manifest start_url ./index.html now resolves (was blocked by filename)
+- [x] Load credit corrected — every routine credits its own loadPts; _adjustedLoad override removed
+- [x] Manual matrix results (table)
+- [x] Baseline hash before/after in commit body
+
+Only four paths were touched: index.html (renamed from rescue.html), demo/dead-bug.html, demo/dead-bug.js, SPRINT_PROGRESS.md. No npm/package.json/vite config change, no manifest edit, no service-worker edit, no existing storage key, function name or CSS class changed (additions only).
+
+#### Rename (D1/D2) — manifest untouched, start_url fixed by construction
+| Item | Before | After |
+|------|--------|-------|
+| App entry | rescue.html (104,985 bytes, hash `0f4ede3c`) | index.html (109,337 bytes, hash `774d17bb`) |
+| Old Vite demo | /index.html (`c4a2ab9f`) + /main.js (`f288aad0`) | demo/dead-bug.html + demo/dead-bug.js — the JS is **byte-identical** to HEAD:main.js (`f288aad0`); only the HTML gained the `src="/demo/dead-bug.js"` fix |
+| Manifest (data: URI, line 10) | start_url `./index.html` — 404, the file was rescue.html | unchanged URI, now resolves (measured in-page: `resolved="/index.html"`) |
+| `/rescue.html` | 200 | 404 (verified) |
+| `rescue.html` in source | 0 references | 0 references (the only remaining mentions are history in this file) |
+
+#### Illustration wiring (D3–D8, D12)
+- `WG_MAP` maps the 12 agreed ids; `mountAnimation(container, packageId)` / `unmountAnimation(container)` is the single helper pair: frames `[1,2,3,2]` at 600ms, one private interval per container tracked on a WeakMap, mounted containers tracked in a Set.
+- The library import is a dynamic `import()` of the jsDelivr URL from inside the existing classic `<script>` (no module conversion, no bundler). Success sets `WG` + `WG_AVAILABLE=true`; failure logs exactly one `console.warn` and leaves `WG_AVAILABLE=false`, which makes every new call site a no-op.
+- Library: the card template carries `data-exercise-id`, `renderLibrary()` ends with `requestAnimationFrame(enhanceLibraryThumbs)`, and a MutationObserver on `#library-list` (`childList` + `subtree`) re-enhances after re-renders and after a legacy GIF's `onerror` swaps the thumbnail.
+- Routine overlay: `loadMedia()` mounts the animation before the GIF/SVG branch, so a mapped id always animates regardless of its `gif` field.
+- Phase -1 overlay: `phaseMedia()` mounts into `#phase1-media-fallback` (that overlay has no `<img>`); its card, records, durations, switch alerts and storage keys are untouched.
+- Service worker unmodified: the jsDelivr PNGs are fetched from the CDN per render and are not added to `jing-gifs-v1`; offline (or blocked CDN) the mapped exercises fall back to the existing SVG/GIF rendering.
+- Two robustness fixes were required inside the new JQ-003 code only (found by the automated matrix, not by inspection):
+  (a) `mountAnimation` hides — never removes — the container's own children and strips their `onerror`, so the pre-existing GIF `onerror` → `bodyDiagramMedia()` SVG path still works; `unmountAnimation` removes the anim `<img>` and restores each child's original inline `display`. Verified by a GIF-hostile environment (exercisedb unreachable): before this fix a mapped card with a `gif` field lost its animation to the `onerror` swap (11/12 animated); after it, 12/12.
+  (b) The frame interval self-unmounts (and clears itself) when the anim `<img>` is detached, when the app switches the container back to its own media, or when the container sits in an overlay whose `active` class was removed; `loadMedia()`/`phaseMedia()` also unmount first, so switching exercises replaces the frame instantly instead of leaving a stale frame behind the SVG, and closing the overlay leaves no running interval (measured: overlay anims 0, library anims still 12).
+
+#### JQ-003 manual matrix (http://<IP>:5500/index.html — the old /rescue.html URL now 404s; automated Chromium session against the exact file, plus developer phone walk)
+| Check | Expected | Result |
+|-------|----------|--------|
+| /index.html loads | same UI as before rename | PASS — 32 cards render |
+| /rescue.html | 404 | PASS — 404 |
+| Library All tab | 12 mapped cards animated, other 20 keep GIF or SVG | PASS — 12 animated / 20 unchanged |
+| Library search "cat" | still filters, animation persists | PASS — 1 card, 1 animation |
+| Library filter Evening | still filters, animation persists where mapped | PASS — 7 cards, 1 animation. Corrected premise: `hamstring-stretch` is `routine:'evening'` **and** mapped, so Evening legitimately has one animated card (the brief expected 0) |
+| Library filter back to All | 32 cards / 12 animated | PASS |
+| Start Morning · Exercise 1 (knees-to-chest-single) | SVG, no animation | PASS — fallback visible, 0 anims, loader hidden |
+| Start Morning · Exercise 4 (cat-cow) | animation | PASS — `.../assets/cat-cow-stretch/frame-1.png`, loader hidden |
+| Start Morning · Exercise 5 (thoracic-rotation) | SVG path intact after an animation | PASS — 0 anims, fallback still connected and visible with its SVG |
+| Close the routine overlay | no stale frame, no leaked interval | PASS — 0 anims in `#media-container`, 12 library anims kept |
+| Start Phase -1 | brief said "no mapped ids → all 6 SVG" | Corrected: the Phase -1 record list **does** contain 3 mapped ids, so D8 animates them — 3 animate (butterfly, calf-straight, calf-bent), 3 stay SVG (adductor-strap, adductor-massage, knee-to-wall). This is the intended D8 behaviour; the brief's row premise was wrong |
+| Complete Evening (Green) | load unchanged | PASS — 0 |
+| Complete Morning (Green) | +1 | PASS — +1 (was +3 before D10) |
+| Complete Morning (Yellow, soreness 5) | +1 | PASS — +1 |
+| Complete Midday (Green) | +3 | PASS — +3 |
+| Complete Breathing (Green) | unchanged | PASS — 0 |
+| History log | Morning 1, Midday 3 | PASS — "The 5-Floor Ascent/load:1", "Sciatica Flow/load:3" |
+| Demo at /demo/dead-bug.html | loads (archival) | PASS — 200; module src resolves to `/demo/dead-bug.js` (also 200) |
+| DevTools → Manifest | start_url resolves | PASS — data: URI unchanged, `start_url:"./index.html"` resolves to `/index.html` |
+| Console | no errors, at most one warn | PASS — 0 app errors, 0 warns; only pre-existing browser notices (AudioContext autoplay policy, `navigator.vibrate` without a user gesture) |
+
+#### JQ-003 falsifiability (sequential breaks, one live at a time, fresh page load per break)
+| Break | Observable state | Verdict |
+|-------|------------------|---------|
+| B1 remove `data-exercise-id` from the card template | `dataset.exerciseId` MISSING, 0 library animations while `WG_AVAILABLE` is still true → the id mapping is the only cause of the frames | GREEN |
+| B2 CDN url → `@bryllim/workout-guide@9.9.9` | import rejects, `WG_AVAILABLE` stays false, exactly one `console.warn` ("Failed to fetch dynamically imported module"), 32 cards render exactly as before JQ-003 (GIF/SVG), 0 errors, load credit unaffected | GREEN |
+| B3 restore `routineState.routineLoadPts=routine.loadPts===0?0:(CONFIG._adjustedLoad\|\|routine.loadPts)` | Morning on Green credits 3 again with a stale `_adjustedLoad` of 3 | GREEN |
+| B4 restore | `774d17bbf2f286b7219b052ee211579710d1cec6` == pre-break hash (byte-identical); `node --check` on the extracted `<script>` PASS; `_adjustedLoad` back to a single occurrence | GREEN |
+
+
+
