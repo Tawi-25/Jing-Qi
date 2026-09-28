@@ -1,0 +1,421 @@
+Product Brief
+JING: The Personal Recovery Guardian
+Version 2.0
+
+Platform: Progressive Web App (PWA)
+Primary Devices: Android, Desktop
+Audience: Individuals living with chronic musculoskeletal pain, sedentary professionals, and anyone seeking a sustainable mobility practice.
+
+1. Vision
+
+Modern fitness apps reward intensity.
+
+JING rewards longevity.
+
+Rather than encouraging users to exercise harder or more frequently, JING acts as a personal recovery guardian, helping users move enough to improve mobility while protecting them from overexertion.
+
+The philosophy is simple:
+
+The healthiest body isn't the one that works the hardest. It's the one that recovers the best.
+
+Movement is treated as medicine.
+
+Rest is treated as productive.
+
+Recovery is treated as measurable.
+
+2. Mission
+
+Help people maintain healthy joints, fascia, nerves, and mobility for decades by delivering intelligent daily movement recommendations that adapt to their body's current condition.
+
+Instead of asking:
+
+"How much can you do today?"
+
+JING asks:
+
+"What does your body need today?"
+
+3. Design Philosophy
+
+JING combines principles from modern movement science with insights from Traditional Chinese Medicine (TCM).
+
+Rather than presenting TCM as medical fact, the app uses it as a framework for creating mindful movement routines centered around recovery, balance, and body awareness.
+
+Three guiding principles shape every feature inside the app.
+
+Preserve Recovery Capacity
+
+Recovery is a limited resource.
+
+Every workout, stretch, or prolonged period of sitting places demands on the body.
+
+JING helps users stay within a sustainable recovery capacity rather than constantly chasing improvement.
+
+Restore Movement
+
+Pain often causes people to move less.
+
+Moving less usually causes more stiffness.
+
+More stiffness often creates more pain.
+
+JING aims to interrupt this cycle through small, consistent movement sessions instead of aggressive exercise.
+
+Build Awareness
+
+The goal isn't simply completing routines.
+
+It's helping users recognize patterns.
+
+Poor sleep.
+
+High stress.
+
+Long sitting sessions.
+
+Increasing soreness.
+
+Over time the user develops confidence in listening to their body rather than guessing what it needs.
+
+4. The Problem
+Physical Reality
+
+The initial version of JING is designed around one user's lived experience.
+
+Chronic bilateral sciatica
+Right-side dominant nerve pain
+Historical left hip tendon injury
+Right knee meniscus surgery
+Long hours sitting while developing software
+High stress
+Fascial tightness
+Fear of long-term joint degeneration
+
+These experiences provide the design constraints that shape Version 1.
+
+Future versions should become configurable for different users.
+
+Behavioral Reality
+
+The largest problem isn't laziness.
+
+It's inconsistency.
+
+Typical cycle:
+
+Pain improves.
+
+↓
+
+Exercise aggressively.
+
+↓
+
+Body becomes irritated.
+
+↓
+
+Pain returns.
+
+↓
+
+Complete inactivity.
+
+↓
+
+Repeat.
+
+JING exists to break this cycle.
+
+5. Product Principles
+
+Every feature should support at least one of these principles.
+
+Protect before progressing.
+Recovery is productive.
+Small movements beat heroic workouts.
+Consistency beats intensity.
+Breath guides movement.
+Simplicity reduces resistance.
+Never encourage users to push through pain.
+
+If a feature violates these principles, it doesn't belong in JING.
+
+6. The Recovery Engine
+
+The Recovery Engine is the heart of JING.
+
+Instead of counting calories or rewarding exercise streaks, it continuously estimates how much recovery capacity the user has available.
+
+Inputs include:
+
+Morning soreness
+Previous day's activity
+Weekly movement load
+Time spent sitting
+Sleep quality (future)
+Energy level (future)
+Stress level (future)
+
+The engine determines today's recommendation.
+
+Green Day
+
+Body appears well recovered.
+
+Recommended:
+
+Full mobility routine
+Strength work
+Walking
+Breathwork
+Yellow Day
+
+Signs of accumulated fatigue.
+
+Recommended:
+
+Gentle mobility
+Nerve glides
+Walking
+Breathwork
+
+Avoid:
+
+Heavy loading
+Long routines
+Red Day
+
+Recovery is prioritized.
+
+Recommended:
+
+Guided breathing
+Acupressure
+Gentle positional relief
+Short walks if comfortable
+
+Avoid:
+
+Stretching into pain
+Intense exercise
+Extended routines
+7. The Recovery Capacity System
+
+Instead of awarding points for doing more, JING tracks recovery demand.
+
+Each activity contributes to the user's weekly movement load.
+
+Example values:
+
+Activity	Load
+Breathing	0
+Gentle mobility	1
+Walking	1
+Stability exercises	2
+Longer strengthening routine	3
+
+Load is adjusted dynamically based on current soreness.
+
+For example:
+
+A routine worth 2 points may count as 4 points if performed during a high-soreness day.
+
+This encourages intelligent restraint rather than unnecessary effort.
+
+8. Daily Experience
+Morning
+Recovery Check-In
+
+Questions:
+
+How sore are you?
+Where do you feel discomfort?
+How well did you sleep?
+How much energy do you have?
+
+Estimated time:
+
+30 seconds.
+
+The Recovery Engine generates today's plan.
+
+Midday
+Movement Reset
+
+A short routine designed to interrupt prolonged sitting.
+
+Examples:
+
+Bird Dogs
+Dead Bugs
+Glute Bridges
+Clamshells
+Walking reminder
+
+The goal is movement, not fatigue.
+
+Evening
+Recovery Session
+
+Focused on:
+
+Fascia
+Hip mobility
+Nerve glides
+Gentle spinal movement
+Relaxation breathing
+9. Recovery Tools
+Breath Pacer
+
+A guided breathing interface available throughout the app.
+
+Supported patterns:
+
+4-7-8
+4-2-6
+Box Breathing
+
+Breathing begins every movement session.
+
+Acupressure Library
+
+Visual guides explaining commonly used TCM points for comfort and relaxation.
+
+Examples include:
+
+GB30
+BL40
+Kidney 3
+
+These are presented as optional complementary practices rather than medical treatments.
+
+Flare-Up Mode
+
+Designed for moments when pain is severe.
+
+Instead of navigating menus, the user taps:
+
+I'm Having a Flare-Up
+
+The app immediately switches into recovery mode.
+
+Sequence:
+
+Calm breathing
+Comfortable positions
+Gentle nerve glides
+Acupressure guidance
+Walking recommendation if appropriate
+
+No decision-making required.
+
+10. User Interface Principles
+
+The interface should reduce cognitive load.
+
+Design language:
+
+Deep indigo backgrounds
+Warm amber highlights
+Large typography
+Minimal text
+Large touch targets
+Offline-first
+Dark mode by default
+
+The interface should feel calm without resembling a meditation app.
+
+Think:
+
+A thoughtfully organized workshop.
+
+Not:
+
+A luxury spa.
+
+11. Technical Requirements
+Progressive Web App
+Offline-first
+Installable
+Local storage for Version 1
+No user accounts
+No cloud dependency
+Resume routines after interruption
+Audio and vibration timers
+JSON export
+
+Future versions may support encrypted cloud backup.
+
+12. Language Guidelines
+
+JING should never shame or pressure users.
+
+Avoid:
+
+Push harder.
+One more rep.
+No excuses.
+Keep grinding.
+
+Prefer:
+
+Your body may benefit from recovery today.
+Rest supports progress.
+Gentle movement is enough.
+Listen before you load.
+
+The app should feel like an experienced physiotherapist who understands recovery, not a fitness coach chasing personal bests.
+
+13. Measuring Success
+
+The app succeeds when users experience fewer setbacks, not more completed workouts.
+
+Indicators include:
+
+Reduced flare-ups
+Improved consistency
+Increased daily mobility
+Less stiffness after sitting
+Better awareness of recovery patterns
+Greater confidence managing chronic pain
+
+The ultimate measure of success is simple:
+
+The user can live, work, and move with less pain and greater confidence.
+
+14. Development Roadmap
+Sprint 1
+PWA shell
+Recovery Check-In
+Recovery Engine
+Today's Plan dashboard
+Sprint 2
+Guided routines
+Timers
+Breathing interface
+Weekly Recovery Capacity tracker
+Sprint 3
+Acupressure library
+Flare-Up Mode
+Routine history
+Recovery trends
+Sprint 4
+Sitting reminders
+Progressive personalization
+Recovery analytics
+Wearable integration (future)
+15. Long-Term Vision
+
+JING is not intended to become another fitness application.
+
+It is intended to become a Personal Recovery Operating System.
+
+Stretching is only one tool.
+
+Over time, JING can evolve into an intelligent companion that understands how the user moves, recovers, works, and ages, helping them make better decisions every day.
+
+Its purpose is not to maximize performance.
+
+Its purpose is to preserve movement, reduce pain, and help people remain active throughout their lives.

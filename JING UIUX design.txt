@@ -1,0 +1,547 @@
+JING
+User Experience & Interface Specification
+Version 2.0
+Design Philosophy
+
+JING should never feel like a fitness application.
+
+It should feel like a trusted companion that quietly helps users recover, move well, and age gracefully.
+
+Every interaction should reduce anxiety rather than increase it.
+
+The interface should encourage slowing down rather than rushing through tasks.
+
+The app succeeds when users feel calmer after opening it than before.
+
+Design Principles
+Calm Before Action
+
+Every screen begins with breathing space.
+
+Nothing flashes.
+
+Nothing competes for attention.
+
+One Decision at a Time
+
+Users should never wonder
+
+"What do I do next?"
+
+Every screen answers exactly one question.
+
+Recovery is Progress
+
+The interface should celebrate recovery rather than activity.
+
+A Rest Day should feel like success.
+
+Not failure.
+
+Gentle Guidance
+
+Instead of
+
+Complete Today's Workout
+
+use
+
+Your body appears ready for gentle movement.
+
+Instead of
+
+Workout Missed
+
+say
+
+Tomorrow is another opportunity to move.
+
+Visual Identity
+Colors
+
+Background
+
+#0E1116
+
+Night sky.
+
+Grounded.
+
+Timeless.
+
+Surface Cards
+
+#171C23
+
+Soft elevation.
+
+Primary Accent
+
+#C89B5B
+
+Warm earth.
+
+Represents vitality.
+
+Recovery Blue
+
+#627D98
+
+Calm.
+
+Breathing.
+
+Reflection.
+
+Green
+
+#6FB98F
+
+Recovered.
+
+Amber
+
+#E8B04B
+
+Recovery Needed.
+
+Soft Red
+
+#D98282
+
+Protect Yourself.
+
+Never emergency red.
+
+Text
+
+Primary
+
+#F5F4F2
+
+Secondary
+
+#B8BDC7
+
+Typography
+
+Inter
+
+or
+
+SF Pro
+
+Large spacing.
+
+Large buttons.
+
+Large numbers.
+
+Nothing decorative.
+
+Navigation
+
+Bottom Navigation
+
+Today
+
+Recover
+
+Library
+
+Insights
+
+That's it.
+
+TODAY
+
+This is home.
+
+Every time.
+
+Instead of
+
+Good Morning
+
+The screen begins with
+
+How is your body feeling today?
+
+Below
+
+Large soreness selector.
+
+Instead of a slider...
+
+I'd use ten circles.
+
+○ ○ ○ ○ ○ ○ ○ ○ ○ ○
+
+Tap one.
+
+Done.
+
+No dragging.
+
+Below
+
+Sleep
+
+🙂 Great
+
+😐 Okay
+
+😴 Poor
+
+Below
+
+Energy
+
+High
+
+Medium
+
+Low
+
+Then
+
+Large Card
+
+TODAY
+
+Recovery Status
+
+🟡
+
+Recovery Focus
+
+Gentle Mobility
+
+Estimated Time
+
+18 minutes
+
+Large button
+
+Begin Recovery
+
+Nothing else.
+
+During Work
+
+One thing missing from your document.
+
+This app exists because of sitting.
+
+The app should know this.
+
+After 90 minutes
+
+Notification
+
+You've been sitting for a while.
+
+Two buttons.
+
+Move
+
+Later
+
+Move launches a 2-minute mobility session.
+
+Recovery Session
+
+When user presses
+
+Begin Recovery
+
+The entire UI changes.
+
+No navigation.
+
+No distractions.
+
+Dark background.
+
+Large breathing circle.
+
+Exercise title.
+
+Huge animation.
+
+Huge timer.
+
+Nothing else.
+
+Cat-Cow
+
+1:52
+
+Bottom
+
+Pause
+
+Skip
+
+Finish
+
+No tiny buttons.
+
+Between Exercises
+
+Don't instantly jump.
+
+Instead
+
+Breathing screen.
+
+Nice.
+
+Take one slow breath.
+
+Next movement begins in...
+
+5
+
+4
+
+3
+
+2
+
+1
+
+This makes the experience feel intentional.
+
+End of Routine
+
+Don't say
+
+Workout Complete!
+
+Say
+
+Recovery Complete
+
+Your body has received today's movement.
+
+Well done.
+
+Huge difference psychologically.
+
+Recover Tab
+
+This replaces Acupressure.
+
+Because recovery isn't only acupressure.
+
+It contains
+
+• Breathing
+
+• Flare-Up Mode
+
+• Acupressure
+
+• Guided Relaxation
+
+• Heat / Ice reminders (future)
+
+• Recovery positions
+
+Big emergency button
+
+I'm Having a Flare-Up
+
+Should always be visible.
+
+Library
+
+Instead of Exercise Library
+
+Call it
+
+Movement Library.
+
+Feels less clinical.
+
+Categories
+
+Mobility
+
+Strength
+
+Nerve Glides
+
+Breathing
+
+Recovery
+
+Stretching
+
+Every exercise card shows
+
+difficulty
+
+duration
+
+body area
+
+load value
+
+equipment
+
+Insights
+
+This replaces History.
+
+History tells you what happened.
+
+Insights explain it.
+
+Top card
+
+This Month
+
+Average Recovery
+
+82%
+
+Then
+
+Recovery Timeline
+
+Colored circles.
+
+Then
+
+Patterns
+
+Example
+
+Your soreness is usually lower after walking.
+
+
+or
+
+Three consecutive sitting breaks reduced evening stiffness.
+
+Eventually AI could generate these.
+
+Guardian Engine
+
+This deserves visibility.
+
+Small card.
+
+Guardian Engine
+
+Today's Recommendation
+
+Gentle Recovery
+
+Reason
+
+You reported increased soreness this morning.
+
+Now users understand
+
+why.
+
+Trust grows.
+
+Flare-Up Mode
+
+This should feel completely different.
+
+Black screen.
+
+One instruction.
+
+Let's reduce tension.
+
+Nothing else matters right now.
+
+Large breathing animation.
+
+Then
+
+comfortable position
+
+then
+
+nerve glide
+
+then
+
+acupressure
+
+No menus.
+
+Pain removes thinking capacity.
+
+Design for that.
+
+Micro-interactions
+
+These are what make premium apps.
+
+✓ Gentle haptic when completing exercises
+
+✓ Slow card animations
+
+✓ Smooth breathing circle
+
+✓ Soft vibration
+
+✓ Gentle fade transitions
+
+✓ Tiny bell
+
+No harsh sounds.
+
+Language System
+
+Never say
+
+Workout
+
+Instead
+
+Recovery Session
+
+Movement Session
+
+Recovery Practice
+
+Mobility Session
+
+Never say
+
+Calories
+
+Never say
+
+Streak
+
+Never say
+
+Failure
+
+Never say
+
+Missed
+
+Instead
+
+Recovery
+
+Consistency
+
+Balance
+
+Capacity
+
+Progress
+
+Awareness
