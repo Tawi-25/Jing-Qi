@@ -451,12 +451,12 @@ const CONFIG={
     {id:'supine-twist',name:'Supine Twist',routine:'evening',target:'Spine',equip:'Body weight',diff:'Beginner',load:'qi',description:'Lying spinal twist to release tension in the lower back.',gif:'',steps:['Lie on back, arms extended to sides','Bend knees, drop them to one side','Turn head in the opposite direction','Hold 30 seconds, switch sides']},
     {id:'hamstring-stretch',name:'Supine Hamstring Stretch',routine:'evening',target:'Hamstrings',equip:'Body weight',diff:'Beginner',load:'qi',description:'Lying stretch for the back of the legs.',gif:'',steps:['Lie on back, one leg extended, one leg raised','Hold behind the raised thigh or calf','Gently pull leg toward chest','Hold 30 seconds, switch sides']},
     {id:'piriformis',name:'Piriformis Stretch',routine:'evening',target:'Piriformis',equip:'Body weight',diff:'Beginner',load:'qi',description:'Figure-4 stretch for the deep gluteal muscles.',gif:'',steps:['Lie on back, both knees bent','Cross one ankle over the opposite knee','Gently pull the bottom leg toward you','Hold 30 seconds, switch sides']},
-    {id:'adductor-strap',name:'Supine Adductor Stretch',routine:'phase-minus1',target:'Adductors',equip:'Strap',diff:'Beginner',load:'qi',description:'Strap-assisted adductor release on the floor.',gif:'',steps:['Lie on back, loop strap around one foot','Let the leg fall out to the side, knee can be bent','Hold 45 seconds, breathing slowly','Switch sides']},
-    {id:'butterfly',name:'Supported Butterfly',routine:'phase-minus1',target:'Adductors',equip:'Cushions',diff:'Beginner',load:'qi',description:'Supported butterfly hold to open the inner hips.',gif:'',steps:['Sit with the soles of the feet together','Rest the knees on cushions so nothing strains','Let the spine soften and lengthen','Hold 60 seconds, breathing slowly']},
-    {id:'adductor-massage',name:'Adductor Self-Massage',routine:'phase-minus1',target:'Adductors',equip:'Hands',diff:'Beginner',load:'qi',description:'Slow self-massage along the inner thigh.',gif:'',steps:['Sit or lie with the inner thigh relaxed','Press gently along the adductor from knee toward groin','Work slowly, pausing on tender spots','60 seconds each side']},
-    {id:'knee-to-wall',name:'Knee-to-Wall',routine:'phase-minus1',target:'Ankle',equip:'Wall',diff:'Beginner',load:'qi',description:'Ankle dorsiflexion reps measured toward the wall.',gif:'',steps:['Kneel on one knee facing a wall, foot flat','Drive the knee forward toward the wall, heel down','Keep the foot straight, no arch collapse','15 reps each side']},
-    {id:'calf-straight',name:'Calf Stretch — Straight Leg',routine:'phase-minus1',target:'Calf',equip:'Wall',diff:'Beginner',load:'qi',description:'Straight-leg calf stretch for the gastrocnemius.',gif:'',steps:['Stand facing a wall, hands on the wall','Step one leg back, knee straight, heel down','Lean in until the calf lengthens','Hold 45 seconds each side']},
-    {id:'calf-bent',name:'Calf Stretch — Bent Knee',routine:'phase-minus1',target:'Calf',equip:'Wall',diff:'Beginner',load:'qi',description:'Bent-knee calf stretch to reach the soleus.',gif:'',steps:['Same stance as the straight-leg calf stretch','Bend the back knee while the heel stays down','Keep the hips facing forward','Hold 45 seconds each side']},
+    {id:'adductor-strap',name:'Supine Adductor Stretch',routine:'phase-minus1',target:'Adductors',equip:'Strap',diff:'Beginner',load:'qi',duration:90,switchAt:45,description:'Strap-assisted adductor release on the floor.',gif:'',steps:['Lie on back, loop strap around one foot','Let the leg fall out to the side, knee can be bent','Hold 45 seconds, breathing slowly','Switch sides']},
+    {id:'butterfly',name:'Supported Butterfly',routine:'phase-minus1',target:'Adductors',equip:'Cushions',diff:'Beginner',load:'qi',duration:60,description:'Supported butterfly hold to open the inner hips.',gif:'',steps:['Sit with the soles of the feet together','Rest the knees on cushions so nothing strains','Let the spine soften and lengthen','Hold 60 seconds, breathing slowly']},
+    {id:'adductor-massage',name:'Adductor Self-Massage',routine:'phase-minus1',target:'Adductors',equip:'Hands',diff:'Beginner',load:'qi',duration:120,switchAt:60,description:'Slow self-massage along the inner thigh.',gif:'',steps:['Sit or lie with the inner thigh relaxed','Press gently along the adductor from knee toward groin','Work slowly, pausing on tender spots','60 seconds each side']},
+    {id:'knee-to-wall',name:'Knee-to-Wall',routine:'phase-minus1',target:'Ankle',equip:'Wall',diff:'Beginner',load:'qi',duration:60,switchAt:30,description:'Ankle dorsiflexion reps measured toward the wall.',gif:'',steps:['Kneel on one knee facing a wall, foot flat','Drive the knee forward toward the wall, heel down','Keep the foot straight, no arch collapse','15 reps each side']},
+    {id:'calf-straight',name:'Calf Stretch — Straight Leg',routine:'phase-minus1',target:'Calf',equip:'Wall',diff:'Beginner',load:'qi',duration:90,switchAt:45,description:'Straight-leg calf stretch for the gastrocnemius.',gif:'',steps:['Stand facing a wall, hands on the wall','Step one leg back, knee straight, heel down','Lean in until the calf lengthens','Hold 45 seconds each side']},
+    {id:'calf-bent',name:'Calf Stretch — Bent Knee',routine:'phase-minus1',target:'Calf',equip:'Wall',diff:'Beginner',load:'qi',duration:90,switchAt:45,description:'Bent-knee calf stretch to reach the soleus.',gif:'',steps:['Same stance as the straight-leg calf stretch','Bend the back knee while the heel stays down','Keep the hips facing forward','Hold 45 seconds each side']},
   ],
   routines:{
     midday:{label:'Sciatica Flow',time:'Midday · Strength & Stability',exercises:['cat-cow','pelvic-tilt','glute-bridge','bird-dog','dead-bug','clamshell','side-leg-lift'],load:'jing',loadPts:3},
@@ -1211,7 +1211,8 @@ function saveAnkleFromInputs(){
   if(btn){const t=btn.textContent;btn.textContent='Saved ✓';setTimeout(function(){btn.textContent=t},1400)}
 }
 // --- parallel minimal player for #phase-minus1-overlay (never touches routineState / pauseState) ---
-let phasePlayer={active:false,exercises:[],step:0,timerInterval:null,countdownInterval:null,timeRemaining:0,paused:false};
+let phasePlayer={active:false,exercises:[],step:0,timerInterval:null,countdownInterval:null,timeRemaining:0,paused:false,switchAt:null,switchFired:false};
+let phaseSwitchCueTimer=null,phaseWakeLock=null;
 const phaseOverlay=document.getElementById('phase-minus1-overlay'),
       phaseNameEl=document.getElementById('phase1-name'),
       phaseTimerEl=document.getElementById('phase1-timer'),
@@ -1236,12 +1237,39 @@ function phaseMedia(exId){
 }
 function phaseTimerDisplay(s){phaseTimerEl.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 
+// --- per-record duration + mid-point switch alert (JQ-001a) ---
+function phaseExerciseDuration(ex){const d=ex&&typeof ex.duration==='number'?ex.duration:0;return d>0?d:CONFIG.exerciseDuration}
+function playSwitchBeep(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.frequency.value=660;o.type='sine';g.gain.setValueAtTime(0.12,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.25);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+0.25)}catch(e){}}
+function phaseClearSwitchCue(){if(phaseSwitchCueTimer){clearTimeout(phaseSwitchCueTimer);phaseSwitchCueTimer=null}}
+function phaseSwitchAlert(){
+  playSwitchBeep();
+  try{if(navigator.vibrate)navigator.vibrate([80,60,80])}catch(e){}
+  phaseClearSwitchCue();
+  const atStep=phasePlayer.step;
+  phaseNameEl.textContent='Switch sides';
+  phaseSwitchCueTimer=setTimeout(function(){
+    phaseSwitchCueTimer=null;
+    if(!phasePlayer.active||phasePlayer.paused||phasePlayer.step!==atStep)return;
+    const ex=CONFIG.exercises.find(e=>e.id===phasePlayer.exercises[atStep]);
+    phaseNameEl.textContent=ex?ex.name:'Movement';
+  },4000);
+}
+function phaseRequestWakeLock(){
+  try{
+    if(!('wakeLock'in navigator)||typeof navigator.wakeLock.request!=='function')return;
+    navigator.wakeLock.request('screen').then(function(s){phaseWakeLock=s}).catch(function(){phaseWakeLock=null});
+  }catch(e){phaseWakeLock=null}
+}
+function phaseReleaseWakeLock(){
+  try{const s=phaseWakeLock;phaseWakeLock=null;if(s&&typeof s.release==='function'){const p=s.release();if(p&&typeof p.catch==='function')p.catch(function(){})}}catch(e){phaseWakeLock=null}
+}
+
 function openPhaseMinus1(){
   const routine=CONFIG.routines[PHASE1_ROUTINE_KEY];if(!routine)return;
   phasePlayer.active=true;phasePlayer.paused=false;
   phasePlayer.exercises=[...routine.exercises];
   phasePauseBtn.textContent='⏸';phasePauseBtn.style.display='';
-  phaseOverlay.classList.add('active');
+  phaseOverlay.classList.add('active');phaseRequestWakeLock();
   document.getElementById('main-content').style.display='none';document.querySelector('nav.bottom-nav').style.display='none';document.querySelector('header').style.display='none';
   phaseShowExercise(0);
 }
@@ -1250,7 +1278,10 @@ function phaseShowExercise(step){
   if(phasePlayer.countdownInterval){clearInterval(phasePlayer.countdownInterval);phasePlayer.countdownInterval=null}
   clearInterval(phasePlayer.timerInterval);phasePlayer.timerInterval=null;
   phasePlayer.step=step;phasePlayer.paused=false;
+  phaseClearSwitchCue();
   const exId=phasePlayer.exercises[step],ex=CONFIG.exercises.find(e=>e.id===exId),label=ex?ex.name:'Movement';
+  phasePlayer.switchAt=(ex&&typeof ex.switchAt==='number'&&ex.switchAt>0)?ex.switchAt:null;
+  phasePlayer.switchFired=false;
   phaseBreathEl.innerHTML='';phaseMedia(exId);
   phaseStepIndicator.textContent='Exercise '+(step+1)+' of '+phasePlayer.exercises.length;
   phaseNextBtn.textContent=(step===phasePlayer.exercises.length-1)?'Finish':'Next Exercise';
@@ -1267,7 +1298,7 @@ function phaseShowExercise(step){
       clearInterval(phasePlayer.countdownInterval);phasePlayer.countdownInterval=null;
       vibrate();phasePauseBtn.style.display='';
       phaseNameEl.textContent=label;phaseBreathEl.innerHTML='';
-      phaseStartTimer(CONFIG.exerciseDuration);
+      phaseStartTimer(phaseExerciseDuration(ex));
     }
   },800);
 }
@@ -1276,6 +1307,9 @@ function phaseStartTimer(secs){
   phasePlayer.timeRemaining=secs;phaseTimerDisplay(secs);
   phasePlayer.timerInterval=setInterval(function(){
     phasePlayer.timeRemaining--;
+    if(phasePlayer.switchAt&&!phasePlayer.switchFired&&phasePlayer.timeRemaining===phasePlayer.switchAt){
+      phasePlayer.switchFired=true;phaseSwitchAlert();
+    }
     if(phasePlayer.timeRemaining<=0){
       clearInterval(phasePlayer.timerInterval);phasePlayer.timerInterval=null;
       playBeep();vibrate();
@@ -1331,7 +1365,8 @@ function phaseAdvance(){
 function phaseClose(){
   clearInterval(phasePlayer.timerInterval);phasePlayer.timerInterval=null;
   if(phasePlayer.countdownInterval){clearInterval(phasePlayer.countdownInterval);phasePlayer.countdownInterval=null}
-  phasePlayer.active=false;phasePlayer.paused=false;
+  phasePlayer.active=false;phasePlayer.paused=false;phasePlayer.switchAt=null;phasePlayer.switchFired=false;
+  phaseClearSwitchCue();phaseReleaseWakeLock();
   phasePauseBtn.textContent='⏸';phasePauseBtn.style.display='';
   phaseMediaFallback.style.fontSize='';
   phaseOverlay.classList.remove('active');

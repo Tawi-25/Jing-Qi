@@ -153,3 +153,42 @@
 - Phase -1 completion writes only the three new keys and deliberately does **not** append to `jing_history`, so the existing Insights chart, session list and monthly load stats remain equivalent.
 - New CSS is limited to `.phase-card`, `.phase-row`, `.phase-num`, `.phase-dot`; every other element reuses existing classes (`.card`, `.subtitle`, `.checkin-label`, `.btn`, `.btn-primary`, `.btn-secondary`, `.btn-sm`, `.overlay`, `.timer`, `.instructions`, `.step-indicator`, `.insight-row`, `.insight-card`, `.ic-value`, `.ic-label`).
 - Side effect of D4: the 6 new records also appear in the Library "All" list (Library renders every `CONFIG.exercises` entry) — additive content, no existing entry changed.
+
+### Sprint 6a — JQ-001a: Phase -1 durations + switch alert
+- [x] Added `duration` and `switchAt` fields to Phase -1 records
+- [x] Parallel player reads `record.duration`, falls back to `CONFIG.exerciseDuration`
+- [x] Mid-point switch alert (distinct beep + vibrate + visual cue) fires exactly once per applicable exercise
+- [x] Screen wake lock during Phase -1 overlay
+- [x] Main routine player untouched
+- [x] Manual matrix results (table)
+- [x] Baseline hash before/after in commit body
+
+#### JQ-001a implementation notes
+- Clinical durations (D1): `adductor-strap` 90 (switchAt 45), `butterfly` 60 (no switch), `adductor-massage` 120 (60), `knee-to-wall` 60 (30), `calf-straight` 90 (45), `calf-bent` 90 (45). Only these 6 records changed; `CONFIG.exerciseDuration` stays 60 (D6).
+- Timer init now uses `phaseExerciseDuration(ex)` → `record.duration` when a positive number, else `CONFIG.exerciseDuration` (D2).
+- Switch alert (D3) when `phasePlayer.timeRemaining === phasePlayer.switchAt`, guarded by `phasePlayer.switchFired` so it fires **exactly once per exercise** (reset in `phaseShowExercise`, cleared in `phaseClose`): new `playSwitchBeep()` at **660 Hz** (existing end beep is 528 Hz), `navigator.vibrate([80,60,80])` (existing end vibration is 200 ms), and the text "Switch sides" written into the **existing** `#phase1-name` element for 4 s before the exercise name is restored — no new DOM element.
+- Wake lock (D7): `navigator.wakeLock.request('screen')` on overlay open and released in `phaseClose()`, both wrapped in `try/catch` and feature-detected, so unsupported browsers no-op silently.
+- Main player untouched (D5): `showExercise`/`startTimer` still call `startTimer(CONFIG.exerciseDuration,'exercise')`; the morning/evening/midday routine id lists contain none of the Phase -1 ids, so the new fields are unreachable from the main player. `routineState`, `pauseState`, `CONFIG._adjustedLoad`, `jing_routine_step` and every storage key are unchanged.
+
+#### JQ-001a manual matrix (http://127.0.0.1:5500/rescue.html, no query string)
+| Check | Expected | Result |
+|-------|----------|--------|
+| Exercise 1 (adductor-strap) starts | 01:30 | PASS — timer 01:30, switchAt 45 |
+| At timeRemaining=45 | switch alert fires once (beep + vibrate + text) | PASS — 1 fire, 660 Hz, [80,60,80], "Switch sides", name restored after 4 s |
+| Exercise 2 (butterfly) | 01:00, no switch alert | PASS — 0 fires |
+| Exercise 3 (adductor-massage) | 02:00, alert at 01:00 remaining | PASS — 1 fire at 60 |
+| Exercise 4 (knee-to-wall) | 01:00, alert at 00:30 remaining | PASS — 1 fire at 30 |
+| Exercise 5 (calf-straight) | 01:30, alert at 00:45 remaining | PASS — 1 fire at 45 |
+| Exercise 6 (calf-bent) | 01:30, alert at 00:45 remaining | PASS — 1 fire at 45 |
+| Pause before switch, resume past it | alert fires once, not twice | PASS — 1 fire across two pause/resume cycles |
+| Close overlay before switch | no alert, no console error | PASS — 0 fires, wake lock released, zero console errors |
+| Sciatica Flow / morning / evening | unchanged, 01:00 each | PASS — 01:00 and 528 Hz beep for all three |
+
+#### JQ-001a falsifiability (sequential breaks, fresh page load per break)
+| Break | Observable state | Verdict |
+|-------|------------------|---------|
+| B1 remove `duration:90` from adductor-strap | `record.duration` ABSENT → timer shows 01:00, not 01:30 (fallback) | GREEN |
+| B2 remove `switchAt:45` from adductor-strap | `phasePlayer.switchAt` null → 0 alerts when crossing 45, duration 01:30 intact | GREEN |
+| B3 switch beep 660 Hz → 528 Hz (and matching envelope) | switch beep measured [528 Hz]/[0.15] identical to end beep [528 Hz]/[0.15] → indistinguishable by ear | GREEN (measured) |
+| B4 restore | hash `976aad78971f007fcc77304496e6a861debbb029` == pre-break hash (byte-identical) | GREEN |
+
