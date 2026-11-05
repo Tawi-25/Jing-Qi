@@ -9,35 +9,93 @@
 <meta name="apple-mobile-web-app-title" content="JING">
 <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkpJTkc6IFFpIEd1YXJkaWFuIiwKICAic2hvcnRfbmFtZSI6ICJKSU5HIiwKICAiZGVzY3JpcHRpb24iOiAiWW91ciBQZXJzb25hbCBSZWNvdmVyeSBHdWFyZGlhbiIsCiAgInN0YXJ0X3VybCI6ICIuL2luZGV4Lmh0bWwiLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwZjBlMTMiLAogICJ0aGVtZV9jb2xvciI6ICIjMGYwZTEzIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxOTInIGhlaWdodD0nMTkyJyUzRSUzQ3JlY3Qgd2lkdGg9JzE5MicgaGVpZ2h0PScxOTInIHJ4PSczMicgZmlsbD0nJTIzMGYwZTEzJy8lM0UlM0N0ZXh0IHg9Jzk2JyB5PScxMjAnIGZvbnQtZmFtaWx5PSdzeXN0ZW0tdWknIGZvbnQtc2l6ZT0nNzInIGZvbnQtd2VpZ2h0PSczMDAnIGZpbGw9JyUyM2Q0YTM3MycgdGV4dC1hbmNob3I9J21pZGRsZSclM0VKJTNDL3RleHQlM0UlM0Mvc3ZnJTNFIiwKICAgICAgInNpemVzIjogIjE5MngxOTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
 <title>JING: Qi Guardian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+/* ==========================================================================
+   JQ-009 · TAWI "GLASS SKIN" DESIGN SYSTEM — LOCKED TOKENS
+   Urbanist type scale · soft radii · 200ms motion · gold-on-glass surfaces
+   ========================================================================== */
+:root{
+  /* Type — Urbanist 300–800 */
+  --font-sans:'Urbanist',sans-serif;
+  --fw-display:300;      /* Display */
+  --fw-body:400;         /* Body / Caption */
+  --fw-semibold:600;     /* H1 / Label */
+  --fw-bold:700;
+  --fw-heavy:800;
+  --type-display-size:56px;
+  --type-display-line:1.05;
+  --type-h1-size:40px;
+  --type-h1-line:44px;
+  --type-body-size:14px;
+  --type-body-line:22px;
+  --type-label-size:11px;
+  --type-label-line:16px;
+  --type-caption-size:12px;
+  --type-caption-line:18px;
+
+  /* Radii */
+  --radius-btn:8px;
+  --radius-input:8px;
+  --radius-card:12px;
+  --radius-modal:16px;
+  --radius-pill:999px;
+
+  /* Motion */
+  --duration:200ms;
+  --ease:ease;
+  --motion:200ms ease;
+
+  /* Surfaces — glassmorphism */
+  --canvas:#0F0E13;
+  --surface:rgba(30,27,45,0.75);
+  --surface-sunken:rgba(30,27,45,0.60);
+  --surface-solid:#1E1B2D;
+  --glass-blur:blur(16px);
+  --hairline:rgba(212,163,115,0.15);
+
+  /* Colour */
+  --gold:#D4A373;
+  --gold-soft:rgba(212,163,115,0.15);
+  --on-gold:#0F0E13;
+  --text-primary:#E4E0E8;
+  --text-secondary:#9CA3AF;
+  --text-muted:#6B6878;
+  --success:#6FB98F;
+  --warning:#D98282;
+  --amber:#E8B04B;
+}
 html,body{height:100%;overflow:hidden;touch-action:manipulation}
 body{
-  font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-  background:#0f0e13;color:#e4e0e8;
+  font-family:var(--font-sans);
+  font-size:var(--type-body-size);line-height:var(--type-body-line);font-weight:var(--fw-body);
+  background:var(--canvas);color:var(--text-primary);
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
   user-select:none;-webkit-user-select:none;
 }
 #app{max-width:480px;margin:0 auto;height:100vh;height:100dvh;display:flex;flex-direction:column;position:relative;overflow:hidden}
 header{padding:16px 20px 8px;display:flex;justify-content:space-between;align-items:baseline;flex-shrink:0}
-header h1{font-size:22px;font-weight:350;letter-spacing:2px;color:#d4a373}
-#meridian-clock{font-size:12px;color:#b8bdc7;text-align:right;line-height:1.3}
+header h1{font-size:22px;font-weight:var(--fw-display);letter-spacing:2px;color:var(--gold)}
+#meridian-clock{font-size:12px;color:var(--text-secondary);text-align:right;line-height:1.3}
 #meridian-clock .meridian-name{color:#d4a373;font-weight:400}
 main{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 20px 80px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 main::-webkit-scrollbar{width:3px}
 main::-webkit-scrollbar-track{background:transparent}
 main::-webkit-scrollbar-thumb{background:rgba(212,163,115,0.3);border-radius:2px}
-.view{display:none;animation:fadeIn 0.4s ease}
+.view{display:none;animation:fadeIn var(--motion)}
 .view.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.load-meter{background:rgba(30,27,45,0.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:16px;padding:16px 18px;margin-bottom:14px}
-.load-meter .label{font-size:13px;color:#b8bdc7;margin-bottom:6px}
+.load-meter{background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:16px 18px;margin-bottom:14px;transition:background var(--motion),border-color var(--motion)}
+.load-meter .label{font-size:13px;color:var(--text-secondary);margin-bottom:6px}
 .load-meter .bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;position:relative}
 .load-meter .bar-fill{height:100%;background:linear-gradient(90deg,#d4a373,#c89b5b);border-radius:3px;transition:width 0.6s ease}
 .load-meter .pts{font-size:13px;margin-top:5px;color:#d4a373;text-align:right}
 .load-meter .adjust-note{font-size:11px;color:#e8b04b;margin-top:4px;display:none}
-.card{background:rgba(30,27,45,0.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:16px;padding:18px;margin-bottom:12px;transition:opacity 0.3s ease}
-.card h2{font-size:16px;font-weight:400;color:#e4e0e8;margin-bottom:10px}
+.card{background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:18px;margin-bottom:12px;transition:opacity var(--motion),background var(--motion),border-color var(--motion),transform var(--motion)}
+.card h2{font-size:16px;font-weight:400;color:var(--text-primary);margin-bottom:10px}
 .card .subtitle{font-size:12px;color:#4a4758;margin-bottom:12px}
 /* === CHECK-IN CIRCLES === */
 .checkin-row{display:flex;justify-content:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
@@ -50,50 +108,50 @@ main::-webkit-scrollbar-thumb{background:rgba(212,163,115,0.3);border-radius:2px
 }
 .checkin-circle.selected{border-color:#d4a373;background:rgba(212,163,115,0.2);color:#d4a373;transform:scale(1.1)}
 .checkin-circle:active{transform:scale(0.95)}
-.checkin-label{font-size:11px;color:#6b6878;text-align:center;margin-bottom:6px;letter-spacing:0.5px}
+.checkin-label{font-size:var(--type-label-size);line-height:var(--type-label-line);font-weight:var(--fw-semibold);color:var(--text-muted);text-align:center;margin-bottom:6px;letter-spacing:0.5px}
 .star,.bolt{transition:all 0.2s ease;cursor:pointer;touch-action:manipulation}
 .star{font-size:20px;color:#3a3748}
 .star.filled{color:#e8b04b}
 .bolt{font-size:18px;color:#3a3748;padding:0 2px}
 .bolt.filled{color:#d4a373}
-.status-pill{display:inline-block;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:400;letter-spacing:0.3px;margin-bottom:14px;transition:background 0.4s ease,color 0.4s ease}
-.status-pill.green{background:rgba(111,185,143,0.2);color:#6fb98f}
-.status-pill.yellow{background:rgba(232,176,75,0.2);color:#e8b04b}
-.status-pill.red{background:rgba(217,130,130,0.2);color:#d98282}
-.routine-name{font-size:13px;color:#b8bdc7;margin-bottom:4px}
+.status-pill{display:inline-block;padding:6px 16px;border-radius:var(--radius-pill);font-size:13px;line-height:var(--type-label-line);font-weight:var(--fw-body);letter-spacing:0.3px;margin-bottom:14px;transition:background var(--motion),color var(--motion),border-color var(--motion)}
+.status-pill.green{background:rgba(111,185,143,0.2);color:var(--success)}
+.status-pill.yellow{background:rgba(232,176,75,0.2);color:var(--amber)}
+.status-pill.red{background:rgba(217,130,130,0.2);color:var(--warning)}
+.routine-name{font-size:13px;color:var(--text-secondary);margin-bottom:4px}
 .routine-time{font-size:11px;color:#4a4758;margin-bottom:10px}
-.action-card .recommendation{font-size:14px;color:#b8bdc7;margin-bottom:6px;line-height:1.4}
+.action-card .recommendation{font-size:14px;color:var(--text-secondary);margin-bottom:6px;line-height:1.4}
 .action-card .load-note{font-size:12px;color:#4a4758;margin-bottom:12px;line-height:1.3}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 24px;border-radius:12px;border:none;font-family:system-ui,sans-serif;font-size:15px;font-weight:400;cursor:pointer;transition:all 0.2s ease;width:100%;letter-spacing:0.3px;touch-action:manipulation}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 24px;border-radius:var(--radius-btn);border:none;font-family:var(--font-sans);font-size:15px;font-weight:var(--fw-semibold);cursor:pointer;transition:background var(--motion),color var(--motion),border-color var(--motion),transform var(--motion),box-shadow var(--motion);width:100%;letter-spacing:0.3px;touch-action:manipulation}
 .btn:active{transform:scale(0.97)}
-.btn-primary{background:#d4a373;color:#0f0e13}
+.btn-primary{background:var(--gold);color:var(--on-gold)}
 .btn-primary:disabled{background:rgba(212,163,115,0.3);color:rgba(15,14,19,0.5);cursor:not-allowed;transform:none}
-.btn-secondary{background:rgba(255,255,255,0.06);color:#e4e0e8;border:1px solid rgba(255,255,255,0.08)}
-.btn-sm{padding:8px 14px;font-size:13px;border-radius:10px;width:auto}
+.btn-secondary{background:rgba(255,255,255,0.06);color:var(--text-primary);border:1px solid rgba(255,255,255,0.08)}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:var(--radius-btn);width:auto}
 .depleted-msg{font-size:13px;color:#d98282;text-align:center;margin-top:8px;line-height:1.4}
-.restorative-note{font-size:12px;color:#b8bdc7;text-align:center;margin-top:8px;line-height:1.4;font-style:italic}
+.restorative-note{font-size:12px;color:var(--text-secondary);text-align:center;margin-top:8px;line-height:1.4;font-style:italic}
 /* === BOTTOM NAV === */
 nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;display:flex;background:rgba(15,14,19,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,0.04);padding:6px env(safe-area-inset-bottom,6px);z-index:50}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:6px 0;background:none;border:none;color:#6b6878;font-family:system-ui,sans-serif;font-size:11px;cursor:pointer;transition:color 0.2s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:6px 0;background:none;border:none;color:var(--text-muted);font-family:var(--font-sans);font-size:var(--type-label-size);line-height:var(--type-label-line);font-weight:var(--fw-semibold);cursor:pointer;transition:color var(--motion);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .nav-item .nav-icon{width:22px;height:22px;margin-bottom:2px;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1}
-.nav-item.active{color:#d4a373}
-/* === ROUTINE OVERLAY === */
-.overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0f0e13;z-index:100;flex-direction:column;align-items:center;justify-content:center;padding:24px;animation:fadeIn 0.3s ease;overflow-y:auto}
+.nav-item.active{color:var(--gold)}
+/* === ROUTINE OVERLAY — glass surface === */
+.overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);z-index:100;flex-direction:column;align-items:center;justify-content:center;padding:24px;animation:fadeIn var(--motion);overflow-y:auto}
 .overlay.active{display:flex}
-.overlay .exercise-name{font-size:20px;font-weight:350;color:#d4a373;margin-bottom:14px;letter-spacing:0.5px}
-.overlay .media-container{width:220px;height:220px;background:rgba(30,27,45,0.6);border-radius:20px;margin-bottom:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.overlay .media-container img{width:100%;height:100%;object-fit:cover;border-radius:20px}
+.overlay .exercise-name{font-size:20px;font-weight:var(--fw-display);color:var(--gold);margin-bottom:14px;letter-spacing:0.5px}
+.overlay .media-container{width:220px;height:220px;background:var(--surface-sunken);border:1px solid var(--hairline);border-radius:var(--radius-modal);margin-bottom:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.overlay .media-container img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius-modal)}
 .exercise-card .ec-thumb .exercise-anim,
 .overlay .media-container .exercise-anim{width:100%;height:100%;object-fit:contain;display:block}
 .overlay .media-container .media-fallback{width:100%;height:100%}
 .overlay .media-container .media-fallback{text-align:center;color:#4a4758;font-size:13px;padding:16px;line-height:1.5}
 .overlay .media-container .media-loading{color:#4a4758;font-size:28px;animation:pulse 1.5s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
-.overlay .timer{font-size:56px;font-weight:275;color:#e4e0e8;letter-spacing:2px;font-variant-numeric:tabular-nums;margin-bottom:16px;line-height:1}
+.overlay .timer{font-size:var(--type-display-size);font-weight:var(--fw-display);color:var(--text-primary);letter-spacing:2px;font-variant-numeric:tabular-nums;margin-bottom:16px;line-height:1}
 .overlay .btn-row{display:flex;gap:10px;width:100%;max-width:320px}
 .overlay .btn-row .btn{flex:1}
 .overlay .btn-row .btn-secondary{flex:0 0 auto;padding:12px 18px;width:auto}
-.overlay .rest-label{font-size:14px;color:#b8bdc7;margin-bottom:4px}
+.overlay .rest-label{font-size:14px;color:var(--text-secondary);margin-bottom:4px}
 .overlay .step-indicator{font-size:12px;color:#4a4758;margin-top:12px}
 .overlay .instructions{font-size:12px;color:#6b6878;max-width:300px;text-align:center;line-height:1.5;margin-bottom:6px;padding:0 10px}
 .breath-circle{width:120px;height:120px;border-radius:50%;border:2px solid rgba(212,163,115,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;transition:transform 4s ease-in-out,border-color 4s ease-in-out}
@@ -102,20 +160,20 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
 .breath-circle .breath-text{font-size:13px;color:#d4a373;font-weight:300;letter-spacing:1px}
 .breath-pattern{font-size:12px;color:#6b6878;margin-bottom:8px}
 /* === LIBRARY === */
-.library-search{width:100%;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(30,27,45,0.6);color:#e4e0e8;font-family:system-ui,sans-serif;font-size:14px;outline:none;margin-bottom:12px}
-.library-search::placeholder{color:#4a4758}
-.library-search:focus{border-color:rgba(212,163,115,0.3)}
+.library-search{width:100%;padding:10px 14px;border-radius:var(--radius-input);border:1px solid var(--hairline);background:var(--surface-sunken);color:var(--text-primary);font-family:var(--font-sans);font-size:var(--type-body-size);outline:none;margin-bottom:12px;transition:border-color var(--motion),background var(--motion)}
+.library-search::placeholder{color:var(--text-muted)}
+.library-search:focus{border-color:rgba(212,163,115,0.45)}
 .filter-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.filter-chip{padding:5px 12px;border-radius:14px;border:1px solid rgba(255,255,255,0.06);background:rgba(30,27,45,0.4);color:#6b6878;font-family:system-ui,sans-serif;font-size:11px;cursor:pointer;transition:all 0.2s}
-.filter-chip.active{background:rgba(212,163,115,0.15);border-color:rgba(212,163,115,0.25);color:#d4a373}
-.exercise-card{background:rgba(30,27,45,0.75);backdrop-filter:blur(12px);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;gap:14px;align-items:center}
+.filter-chip{padding:5px 12px;border-radius:var(--radius-pill);border:1px solid var(--hairline);background:var(--surface-sunken);color:var(--text-secondary);font-family:var(--font-sans);font-size:var(--type-label-size);line-height:var(--type-label-line);font-weight:var(--fw-semibold);cursor:pointer;transition:background var(--motion),color var(--motion),border-color var(--motion)}
+.filter-chip.active{background:var(--gold-soft);border-color:rgba(212,163,115,0.35);color:var(--gold)}
+.exercise-card{background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:14px;margin-bottom:10px;display:flex;gap:14px;align-items:center;transition:background var(--motion),border-color var(--motion),transform var(--motion)}
 .exercise-card .ec-thumb{width:56px;height:56px;border-radius:12px;background:rgba(255,255,255,0.03);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .exercise-card .ec-thumb img{width:100%;height:100%;object-fit:cover}
 .exercise-card .ec-thumb .ec-no-gif{font-size:20px;color:#3a3748}
 .exercise-card .ec-thumb .ec-svg{width:100%;height:100%;padding:4px}
 .exercise-card .ec-thumb .ec-svg svg{width:100%;height:100%}
 .exercise-card .ec-info{flex:1;min-width:0}
-.exercise-card .ec-name{font-size:14px;color:#e4e0e8;font-weight:400;margin-bottom:2px}
+.exercise-card .ec-name{font-size:14px;color:var(--text-primary);font-weight:400;margin-bottom:2px}
 .exercise-card .ec-meta{font-size:11px;color:#4a4758;display:flex;gap:8px;flex-wrap:wrap}
 .exercise-card .ec-meta span{background:rgba(255,255,255,0.03);padding:1px 8px;border-radius:8px}
 .exercise-card .ec-desc{font-size:12px;color:#6b6878;margin-top:4px;line-height:1.3}
@@ -123,64 +181,67 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
 /* === RECOVER TAB === */
 .recover-section{margin-bottom:14px}
 .recover-section h3{font-size:14px;color:#d4a373;font-weight:400;margin-bottom:8px;letter-spacing:0.3px}
-.recover-card{background:rgba(30,27,45,0.75);backdrop-filter:blur(12px);border-radius:14px;padding:16px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;touch-action:manipulation}
+.recover-card{background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:16px;margin-bottom:8px;cursor:pointer;transition:background var(--motion),border-color var(--motion),transform var(--motion);touch-action:manipulation}
 .recover-card:active{transform:scale(0.98);background:rgba(30,27,45,0.5)}
-.recover-card .rc-title{font-size:14px;color:#e4e0e8;font-weight:400;margin-bottom:2px}
-.recover-card .rc-desc{font-size:12px;color:#6b6878;line-height:1.4}
+.recover-card .rc-title{font-size:14px;color:var(--text-primary);font-weight:400;margin-bottom:2px}
+.recover-card .rc-desc{font-size:var(--type-caption-size);line-height:var(--type-caption-line);color:var(--text-muted)}
 .recover-card .rc-icon{font-size:22px;margin-bottom:4px}
 .flare-btn{background:rgba(217,130,130,0.15);border:1px solid rgba(217,130,130,0.2);margin-bottom:14px}
-.flare-btn .rc-title{color:#d98282!important}
-.acupoint-card{background:rgba(30,27,45,0.75);backdrop-filter:blur(12px);border-radius:14px;padding:16px;margin-bottom:10px}
-.acupoint-card .ap-name{font-size:14px;color:#d4a373;font-weight:400;margin-bottom:2px}
-.acupoint-card .ap-location{font-size:12px;color:#b8bdc7;margin-bottom:6px}
+.flare-btn .rc-title{color:var(--warning)!important}
+.acupoint-card{background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:16px;margin-bottom:10px}
+.acupoint-card .ap-name{font-size:14px;color:var(--gold);font-weight:400;margin-bottom:2px}
+.acupoint-card .ap-location{font-size:var(--type-caption-size);line-height:var(--type-caption-line);color:var(--text-secondary);margin-bottom:6px}
 .acupoint-card .ap-desc{font-size:12px;color:#6b6878;line-height:1.5;margin-bottom:6px}
 .acupoint-card .ap-tech{font-size:11px;color:#4a4758;line-height:1.4;padding:8px;background:rgba(0,0,0,0.15);border-radius:10px}
 .disclaimer-box{font-size:11px;color:#4a4758;text-align:center;padding:12px;line-height:1.5;margin-top:4px;border-top:1px solid rgba(255,255,255,0.03)}
 /* === BREATH PACER OVERLAY === */
-.pacer-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0f0e13;z-index:200;flex-direction:column;align-items:center;justify-content:center;padding:24px;animation:fadeIn 0.3s ease}
+.pacer-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);z-index:200;flex-direction:column;align-items:center;justify-content:center;padding:24px;animation:fadeIn var(--motion)}
 .pacer-overlay.active{display:flex}
 .pacer-overlay .pacer-circle{width:160px;height:160px;border-radius:50%;border:2.5px solid rgba(212,163,115,0.3);display:flex;align-items:center;justify-content:center;margin-bottom:16px;transition:transform 4s ease-in-out,border-color 4s ease-in-out}
-.pacer-overlay .pacer-circle .pacer-text{font-size:15px;color:#d4a373;font-weight:300;letter-spacing:1px}
-.pacer-overlay .pacer-timer{font-size:40px;font-weight:275;color:#e4e0e8;margin-bottom:8px}
-.pacer-overlay .pacer-pattern-name{font-size:13px;color:#b8bdc7;margin-bottom:16px}
+.pacer-overlay .pacer-circle .pacer-text{font-size:15px;color:var(--gold);font-weight:var(--fw-display);letter-spacing:1px}
+.pacer-overlay .pacer-timer{font-size:var(--type-h1-size);font-weight:var(--fw-display);color:var(--text-primary);margin-bottom:8px;font-variant-numeric:tabular-nums}
+.pacer-overlay .pacer-pattern-name{font-size:13px;color:var(--text-secondary);margin-bottom:16px}
 .pacer-overlay .pacer-select{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;justify-content:center}
-.pacer-overlay .pacer-select button{padding:6px 14px;border-radius:14px;border:1px solid rgba(255,255,255,0.06);background:rgba(30,27,45,0.4);color:#6b6878;font-family:system-ui,sans-serif;font-size:11px;cursor:pointer;transition:all 0.2s}
-.pacer-overlay .pacer-select button.active{background:rgba(212,163,115,0.15);border-color:rgba(212,163,115,0.25);color:#d4a373}
-.pacer-overlay .pacer-cue{font-size:12px;color:#4a4758;margin-bottom:20px;text-align:center}
+.pacer-overlay .pacer-select button{padding:6px 14px;border-radius:var(--radius-pill);border:1px solid var(--hairline);background:var(--surface-sunken);color:var(--text-secondary);font-family:var(--font-sans);font-size:var(--type-label-size);line-height:var(--type-label-line);font-weight:var(--fw-semibold);cursor:pointer;transition:background var(--motion),color var(--motion),border-color var(--motion)}
+.pacer-overlay .pacer-select button.active{background:var(--gold-soft);border-color:rgba(212,163,115,0.35);color:var(--gold)}
+.pacer-overlay .pacer-cue{font-size:var(--type-caption-size);color:var(--text-muted);margin-bottom:20px;text-align:center}
 /* === FLARE-UP OVERLAY === */
-.flare-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:300;flex-direction:column;align-items:center;justify-content:center;padding:24px;animation:fadeIn 0.5s ease;color:#e4e0e8}
+.flare-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:300;flex-direction:column;align-items:center;justify-content:center;padding:24px;animation:fadeIn var(--motion);color:var(--text-primary)}
 .flare-overlay.active{display:flex}
-.flare-overlay .flare-title{font-size:18px;font-weight:300;color:#d4a373;margin-bottom:20px;letter-spacing:1px}
-.flare-overlay .flare-media{width:160px;height:160px;border-radius:20px;margin-bottom:16px;display:flex;align-items:center;justify-content:center}
+.flare-overlay .flare-title{font-size:18px;font-weight:var(--fw-display);color:var(--gold);margin-bottom:20px;letter-spacing:1px}
+.flare-overlay .flare-media{width:160px;height:160px;border-radius:var(--radius-modal);margin-bottom:16px;display:flex;align-items:center;justify-content:center}
 .flare-overlay .flare-media svg{width:100%;height:100%}
-.flare-overlay .flare-text{font-size:13px;color:#b8bdc7;text-align:center;max-width:280px;line-height:1.5;margin-bottom:12px}
-.flare-overlay .flare-timer{font-size:48px;font-weight:275;color:#e4e0e8;margin-bottom:16px}
-.flare-overlay .flare-progress{font-size:11px;color:#4a4758;margin-bottom:6px}
+.flare-overlay .flare-text{font-size:13px;color:var(--text-secondary);text-align:center;max-width:280px;line-height:1.5;margin-bottom:12px}
+.flare-overlay .flare-timer{font-size:48px;font-weight:var(--fw-display);color:var(--text-primary);margin-bottom:16px;font-variant-numeric:tabular-nums}
+.flare-overlay .flare-progress{font-size:var(--type-label-size);color:var(--text-muted);margin-bottom:6px}
 .flare-overlay .flare-btn-row{display:flex;gap:10px;width:100%;max-width:280px}
 .flare-overlay .flare-btn-row .btn{flex:1}
 /* === SITTING NOTIFICATION === */
-.sitting-banner{display:none;position:fixed;bottom:68px;left:50%;transform:translateX(-50%);max-width:400px;width:calc(100% - 40px);background:rgba(30,27,45,0.95);backdrop-filter:blur(16px);border-radius:16px;padding:16px;z-index:60;border:1px solid rgba(255,255,255,0.04);animation:fadeIn 0.4s ease}
+.sitting-banner{display:none;position:fixed;bottom:68px;left:50%;transform:translateX(-50%);max-width:400px;width:calc(100% - 40px);background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:16px;z-index:60;animation:fadeIn var(--motion)}
 .sitting-banner.active{display:block}
-.sitting-banner .sb-text{font-size:13px;color:#b8bdc7;margin-bottom:10px;line-height:1.4}
+.sitting-banner .sb-text{font-size:13px;color:var(--text-secondary);margin-bottom:10px;line-height:1.4}
 .sitting-banner .sb-row{display:flex;gap:8px}
 .sitting-banner .sb-row .btn{flex:1}
 /* === INSIGHTS === */
-.insight-card{background:rgba(30,27,45,0.75);backdrop-filter:blur(12px);border-radius:14px;padding:16px;margin-bottom:10px;text-align:center}
-.insight-card .ic-value{font-size:28px;font-weight:275;color:#d4a373}
-.insight-card .ic-label{font-size:12px;color:#6b6878;margin-top:2px}
+.insight-card{background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:16px;margin-bottom:10px;text-align:center}
+.insight-card .ic-value{font-size:28px;font-weight:var(--fw-display);color:var(--gold);font-variant-numeric:tabular-nums}
+.insight-card .ic-label{font-size:var(--type-caption-size);color:var(--text-muted);margin-top:2px}
 .chart-container{width:100%;height:100px;margin:8px 0}
 .chart-container svg{width:100%;height:100%}
 .insight-row{display:flex;gap:8px}
 .insight-row .insight-card{flex:1}
-.insight-line{font-size:12px;color:#6b6878;line-height:1.5;margin-top:4px;padding:8px;background:rgba(212,163,115,0.06);border-radius:10px;text-align:center}
-.flare-count{font-size:12px;color:#d98282;margin-top:6px;text-align:center}
+.insight-line{font-size:var(--type-caption-size);color:var(--text-muted);line-height:var(--type-caption-line);margin-top:4px;padding:8px;background:var(--gold-soft);border-radius:var(--radius-btn);text-align:center}
+.flare-count{font-size:var(--type-caption-size);color:var(--warning);margin-top:6px;text-align:center}
 /* === PHASE -1 CLINICAL TRACKER === */
-.phase-card{background:rgba(30,27,45,0.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:16px;padding:18px;margin-bottom:12px}
+.phase-card{background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:18px;margin-bottom:12px}
 .phase-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;flex-wrap:wrap}
-.phase-num{width:62px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(30,27,45,0.6);color:#e4e0e8;font-family:system-ui,sans-serif;font-size:14px;text-align:center;outline:none;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
-.phase-num:focus{border-color:rgba(212,163,115,0.25)}
+.phase-num{width:62px;padding:8px 10px;border-radius:var(--radius-input);border:1px solid var(--hairline);background:var(--surface-sunken);color:var(--text-primary);font-family:var(--font-sans);font-size:var(--type-body-size);text-align:center;outline:none;font-variant-numeric:tabular-nums;-moz-appearance:textfield;transition:border-color var(--motion)}
+.phase-num:focus{border-color:rgba(212,163,115,0.45)}
 .phase-num::-webkit-outer-spin-button,.phase-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.phase-dot{width:8px;height:8px;border-radius:50%;background:#3a3748;flex:0 0 auto;transition:background 0.3s ease}
+.phase-dot{width:8px;height:8px;border-radius:50%;background:#3a3748;flex:0 0 auto;transition:background var(--motion)}
+/* === TYPE NORMALISATION — Label (11/16) + Caption (12/18) keep their leading inside a 14/22 body === */
+.checkin-label,.routine-time,.load-meter .adjust-note,.exercise-card .ec-meta,.flare-overlay .flare-progress{line-height:var(--type-label-line)}
+.card .subtitle,.routine-name,.overlay .step-indicator,.insight-card .ic-label,.pacer-overlay .pacer-cue,.breath-pattern{line-height:var(--type-caption-line)}
 /* === RESPONSIVE === */
 @media(min-width:480px){#app{border-left:1px solid rgba(255,255,255,0.03);border-right:1px solid rgba(255,255,255,0.03)}}
 @media(max-height:640px){
@@ -590,8 +651,8 @@ function acupointSVG(p){
     <line x1="25" y1="30" x2="14" y2="46" class="ab"/>
     <line x1="55" y1="30" x2="66" y2="46" class="ab"/>
     <circle cx="${p.dotX/100*80}" cy="${p.dotY/140*100}" r="4" class="ah"/>
-    <text x="${p.dotX/100*80}" y="${p.dotY/140*100-7}" text-anchor="middle" fill="#d4a373" font-size="6" font-family="system-ui">●</text>
-    <text x="40" y="95" text-anchor="middle" fill="#6b6878" font-size="6" font-family="system-ui">${p.id.toUpperCase()}</text>
+    <text x="${p.dotX/100*80}" y="${p.dotY/140*100-7}" text-anchor="middle" fill="#d4a373" font-size="6" font-family="Urbanist,sans-serif">●</text>
+    <text x="40" y="95" text-anchor="middle" fill="#6b6878" font-size="6" font-family="Urbanist,sans-serif">${p.id.toUpperCase()}</text>
   </svg>`;
 }
 
@@ -832,7 +893,7 @@ function bodyDiagramSVG(exId){return'<svg viewBox="0 0 56 56" xmlns="http://www.
 
 function bodyDiagramMedia(exId){
   const ex=CONFIG.exercises.find(e=>e.id===exId),target=ex?ex.target:'Body',hColor='rgba(212,163,115,0.3)';
-  return `<svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><style>.b{fill:none;stroke:#4a4758;stroke-width:1.5}.h{fill:${hColor};stroke:#d4a373;stroke-width:1.2}</style><circle cx="50" cy="12" r="7" class="b"/><rect x="35" y="20" width="30" height="20" rx="5" class="b"/><rect x="38" y="40" width="24" height="22" rx="4" class="b"/><rect x="40" y="62" width="20" height="12" rx="3" class="b"/><rect x="42" y="74" width="16" height="12" rx="3" class="b"/><rect x="44" y="86" width="12" height="14" rx="3" class="b"/><line x1="30" y1="42" x2="14" y2="62" class="b"/><line x1="70" y1="42" x2="86" y2="62" class="b"/><line x1="30" y1="42" x2="14" y2="22" class="b"/><line x1="70" y1="42" x2="86" y2="22" class="b"/>${target.includes('Spine')||target.includes('Back')||target==='Lower Back'?'<rect x="42" y="24" width="16" height="40" class="h"/>':''}${target.includes('Glute')||target==='Piriformis'||target.includes('Hip')?'<rect x="40" y="56" width="20" height="16" class="h"/>':''}${target.includes('Hamstring')?'<rect x="42" y="74" width="16" height="12" class="h"/>':''}${target.includes('Core')||target.includes('Oblique')||target.includes('Abdominal')?'<rect x="38" y="40" width="24" height="16" class="h"/>':''}${target.includes('Nerve')?'<rect x="42" y="60" width="16" height="30" class="h"/>':''}<text x="50" y="130" text-anchor="middle" fill="#6b6878" font-size="7" font-family="system-ui">${target}</text></svg>`;
+  return `<svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><style>.b{fill:none;stroke:#4a4758;stroke-width:1.5}.h{fill:${hColor};stroke:#d4a373;stroke-width:1.2}</style><circle cx="50" cy="12" r="7" class="b"/><rect x="35" y="20" width="30" height="20" rx="5" class="b"/><rect x="38" y="40" width="24" height="22" rx="4" class="b"/><rect x="40" y="62" width="20" height="12" rx="3" class="b"/><rect x="42" y="74" width="16" height="12" rx="3" class="b"/><rect x="44" y="86" width="12" height="14" rx="3" class="b"/><line x1="30" y1="42" x2="14" y2="62" class="b"/><line x1="70" y1="42" x2="86" y2="62" class="b"/><line x1="30" y1="42" x2="14" y2="22" class="b"/><line x1="70" y1="42" x2="86" y2="22" class="b"/>${target.includes('Spine')||target.includes('Back')||target==='Lower Back'?'<rect x="42" y="24" width="16" height="40" class="h"/>':''}${target.includes('Glute')||target==='Piriformis'||target.includes('Hip')?'<rect x="40" y="56" width="20" height="16" class="h"/>':''}${target.includes('Hamstring')?'<rect x="42" y="74" width="16" height="12" class="h"/>':''}${target.includes('Core')||target.includes('Oblique')||target.includes('Abdominal')?'<rect x="38" y="40" width="24" height="16" class="h"/>':''}${target.includes('Nerve')?'<rect x="42" y="60" width="16" height="30" class="h"/>':''}<text x="50" y="130" text-anchor="middle" fill="#6b6878" font-size="7" font-family="Urbanist,sans-serif">${target}</text></svg>`;
 }
 
 // === ROUTINE OVERLAY ===
@@ -884,11 +945,11 @@ function showCountdown(callback){
   pauseBtn.style.display='none';
   let count=3;
   exerciseName.textContent='Prepare';
-  breathArea.innerHTML='<div style="font-size:48px;font-weight:275;color:#d4a373;text-align:center;padding:10px">'+count+'</div><div style="font-size:12px;color:#4a4758;text-align:center">Breathe slowly</div>';
+  breathArea.innerHTML='<div style="font-size:48px;font-weight:300;color:#d4a373;text-align:center;padding:10px">'+count+'</div><div style="font-size:12px;color:#4a4758;text-align:center">Breathe slowly</div>';
   const ci=setInterval(()=>{
     count--;
     if(count>0){
-      breathArea.innerHTML='<div style="font-size:48px;font-weight:275;color:#d4a373;text-align:center;padding:10px">'+count+'</div><div style="font-size:12px;color:#4a4758;text-align:center">Breathe slowly</div>';
+      breathArea.innerHTML='<div style="font-size:48px;font-weight:300;color:#d4a373;text-align:center;padding:10px">'+count+'</div><div style="font-size:12px;color:#4a4758;text-align:center">Breathe slowly</div>';
       if(count===1)playBeep();
     }else{
       clearInterval(ci);
@@ -953,7 +1014,7 @@ function completeRoutine(){
   exerciseName.textContent='Recovery Complete';
   mediaImg.style.display='none';mediaLoading.style.display='none';mediaFallback.style.display='block';mediaFallback.textContent='✦';mediaFallback.style.fontSize='36px';
   exerciseTimer.textContent='✦';
-  breathArea.innerHTML='<p style="font-size:14px;color:#b8bdc7;line-height:1.6;max-width:300px">Your body has received today\'s movement. Well done. Consistency builds resilience. See you tomorrow.</p>';
+  breathArea.innerHTML='<p style="font-size:14px;color:var(--text-secondary);line-height:1.6;max-width:300px">Your body has received today\'s movement. Well done. Consistency builds resilience. See you tomorrow.</p>';
   nextBtn.textContent='Close';stepIndicator.textContent=loadEarned>0?'+'+loadEarned+' pts added to Weekly Essence':'Restorative session complete';
   routineState.active=false;
 }
@@ -1094,10 +1155,10 @@ function showFlarePhase(phase){
 
 function flarePhaseSVG(phase){
   const svgs=[
-    `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="20" fill="none" stroke="#d4a373" stroke-width="2" opacity="0.5"/><circle cx="40" cy="40" r="8" fill="none" stroke="#d4a373" stroke-width="1.5"/><text x="40" y="43" text-anchor="middle" fill="#6b6878" font-size="8" font-family="system-ui">○</text></svg>`,
-    `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="25" width="40" height="30" rx="5" fill="none" stroke="#d4a373" stroke-width="1.5" opacity="0.5"/><circle cx="40" cy="20" r="6" fill="none" stroke="#d4a373" stroke-width="1.5"/><line x1="20" y1="35" x2="10" y2="55" stroke="#d4a373" stroke-width="1.5" opacity="0.4"/><line x1="60" y1="35" x2="70" y2="55" stroke="#d4a373" stroke-width="1.5" opacity="0.4"/><text x="40" y="68" text-anchor="middle" fill="#6b6878" font-size="7" font-family="system-ui">Rest</text></svg>`,
-    `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><rect x="25" y="15" width="30" height="50" rx="4" fill="none" stroke="#d4a373" stroke-width="1.5" opacity="0.5"/><circle cx="40" cy="10" r="5" fill="none" stroke="#d4a373" stroke-width="1.5"/><line x1="30" y1="45" x2="16" y2="65" stroke="#d4a373" stroke-width="1.5" opacity="0.5"/><line x1="50" y1="45" x2="64" y2="65" stroke="#d4a373" stroke-width="1.5" opacity="0.5"/><text x="40" y="72" text-anchor="middle" fill="#6b6878" font-size="7" font-family="system-ui">Nerve</text></svg>`,
-    `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="18" fill="none" stroke="#d4a373" stroke-width="1.5" opacity="0.4"/><circle cx="40" cy="26" r="4" fill="#d4a373" opacity="0.4"/><text x="40" y="66" text-anchor="middle" fill="#6b6878" font-size="7" font-family="system-ui">GB-30</text></svg>`,
+    `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="20" fill="none" stroke="#d4a373" stroke-width="2" opacity="0.5"/><circle cx="40" cy="40" r="8" fill="none" stroke="#d4a373" stroke-width="1.5"/><text x="40" y="43" text-anchor="middle" fill="#6b6878" font-size="8" font-family="Urbanist,sans-serif">○</text></svg>`,
+    `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="25" width="40" height="30" rx="5" fill="none" stroke="#d4a373" stroke-width="1.5" opacity="0.5"/><circle cx="40" cy="20" r="6" fill="none" stroke="#d4a373" stroke-width="1.5"/><line x1="20" y1="35" x2="10" y2="55" stroke="#d4a373" stroke-width="1.5" opacity="0.4"/><line x1="60" y1="35" x2="70" y2="55" stroke="#d4a373" stroke-width="1.5" opacity="0.4"/><text x="40" y="68" text-anchor="middle" fill="#6b6878" font-size="7" font-family="Urbanist,sans-serif">Rest</text></svg>`,
+    `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><rect x="25" y="15" width="30" height="50" rx="4" fill="none" stroke="#d4a373" stroke-width="1.5" opacity="0.5"/><circle cx="40" cy="10" r="5" fill="none" stroke="#d4a373" stroke-width="1.5"/><line x1="30" y1="45" x2="16" y2="65" stroke="#d4a373" stroke-width="1.5" opacity="0.5"/><line x1="50" y1="45" x2="64" y2="65" stroke="#d4a373" stroke-width="1.5" opacity="0.5"/><text x="40" y="72" text-anchor="middle" fill="#6b6878" font-size="7" font-family="Urbanist,sans-serif">Nerve</text></svg>`,
+    `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="18" fill="none" stroke="#d4a373" stroke-width="1.5" opacity="0.4"/><circle cx="40" cy="26" r="4" fill="#d4a373" opacity="0.4"/><text x="40" y="66" text-anchor="middle" fill="#6b6878" font-size="7" font-family="Urbanist,sans-serif">GB-30</text></svg>`,
   ];
   return svgs[phase]||'';
 }
@@ -1149,7 +1210,7 @@ function openRelax(){
 }
 
 function relaxPhaseSVG(){
-  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="50" cy="35" r="8" fill="none" stroke="#d4a373" stroke-width="1.5" opacity="0.5"/><rect x="35" y="43" width="30" height="35" rx="5" fill="none" stroke="#d4a373" stroke-width="1.5" opacity="0.4"/><line x1="35" y1="55" x2="15" y2="75" stroke="#d4a373" stroke-width="1.5" opacity="0.3"/><line x1="65" y1="55" x2="85" y2="75" stroke="#d4a373" stroke-width="1.5" opacity="0.3"/><text x="50" y="90" text-anchor="middle" fill="#6b6878" font-size="8" font-family="system-ui">Gentle Flow</text></svg>`;
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="50" cy="35" r="8" fill="none" stroke="#d4a373" stroke-width="1.5" opacity="0.5"/><rect x="35" y="43" width="30" height="35" rx="5" fill="none" stroke="#d4a373" stroke-width="1.5" opacity="0.4"/><line x1="35" y1="55" x2="15" y2="75" stroke="#d4a373" stroke-width="1.5" opacity="0.3"/><line x1="65" y1="55" x2="85" y2="75" stroke="#d4a373" stroke-width="1.5" opacity="0.3"/><text x="50" y="90" text-anchor="middle" fill="#6b6878" font-size="8" font-family="Urbanist,sans-serif">Gentle Flow</text></svg>`;
 }
 
 function startRelaxTimer(){
@@ -1204,7 +1265,7 @@ function renderInsights(){
   const bars=days.map((d,i)=>{
     const h=chartH*(d.load/maxLoad);
     return '<rect x="'+(i*(barW+barGap))+'" y="'+(chartH-h)+'" width="'+barW+'" height="'+h+'" rx="2" fill="rgba(212,163,115,'+(0.3+0.7*(d.load/maxLoad))+')"/>'+
-      '<text x="'+(i*(barW+barGap)+barW/2)+'" y="'+(chartH+10)+'" text-anchor="middle" fill="#4a4758" font-size="7" font-family="system-ui">'+d.day+'</text>';
+      '<text x="'+(i*(barW+barGap)+barW/2)+'" y="'+(chartH+10)+'" text-anchor="middle" fill="#4a4758" font-size="7" font-family="Urbanist,sans-serif">'+d.day+'</text>';
   }).join('');
 
   // Insight text
@@ -1217,16 +1278,16 @@ function renderInsights(){
     '<div class="insight-row"><div class="insight-card"><div class="ic-value" style="font-size:20px">'+avgLoad+'</div><div class="ic-label">Avg Session Load</div></div>'+
     '<div class="insight-card"><div class="ic-value" style="font-size:20px">'+weeklyLoad+'</div><div class="ic-label">Current Week Load</div></div>'+
     '<div class="insight-card"><div class="ic-value" style="font-size:20px;color:#d98282">'+flareCount+'</div><div class="ic-label">Flare-Ups This Month</div></div></div>'+
-    '<div style="margin-top:8px;font-size:12px;color:#b8bdc7">Weekly Recovery Load</div>'+
+    '<div style="margin-top:8px;font-size:12px;color:var(--text-secondary)">Weekly Recovery Load</div>'+
     '<div class="chart-container"><svg viewBox="0 0 '+(totalW)+' '+(chartH+14)+'" xmlns="http://www.w3.org/2000/svg">'+bars+'</svg></div>'+
     '<div class="insight-line">'+insight+'</div>'+
     '<div style="margin-top:10px">'+
     (history.length===0?'<div style="text-align:center;padding:10px;color:#4a4758;font-size:12px">Complete your first recovery to build insights.</div>':
     '<div style="max-height:140px;overflow-y:auto">'+history.slice(0,5).map(e=>{
       const d=new Date(e.date),ds=d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'}),ts=d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
-      return'<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.02)"><span style="font-size:11px;color:#4a4758">'+ds+' '+ts+'</span><span style="font-size:12px;color:#b8bdc7">'+e.routine+'</span><span style="font-size:12px;color:#6fb98f">+'+(e.load||0)+'</span></div>';
+      return'<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.02)"><span style="font-size:11px;color:#4a4758">'+ds+' '+ts+'</span><span style="font-size:12px;color:var(--text-secondary)">'+e.routine+'</span><span style="font-size:12px;color:#6fb98f">+'+(e.load||0)+'</span></div>';
     }).join('')+'</div>')+
-    '<div class="clear-history" style="margin-top:6px"><button id="clear-insights-btn" style="background:none;border:none;color:#4a4758;font-size:11px;cursor:pointer;font-family:system-ui,sans-serif">Clear history</button></div>';
+    '<div class="clear-history" style="margin-top:6px"><button id="clear-insights-btn" style="background:none;border:none;color:#4a4758;font-size:11px;cursor:pointer;font-family:Urbanist,sans-serif">Clear history</button></div>';
   document.getElementById('clear-insights-btn')?.addEventListener('click',function(){if(history.length===0)return;if(confirm('Clear all recovery history?')){clearHistory();renderInsights()}});
   renderPhaseInsights();
 }
@@ -1397,11 +1458,11 @@ function phaseShowExercise(step){
   phasePauseBtn.style.display='none';
   let count=3;
   phaseNameEl.textContent='Prepare';
-  phaseBreathEl.innerHTML='<div style="font-size:48px;font-weight:275;color:#d4a373;text-align:center;padding:10px">'+count+'</div><div style="font-size:12px;color:#4a4758;text-align:center">Breathe slowly</div>';
+  phaseBreathEl.innerHTML='<div style="font-size:48px;font-weight:300;color:#d4a373;text-align:center;padding:10px">'+count+'</div><div style="font-size:12px;color:#4a4758;text-align:center">Breathe slowly</div>';
   phasePlayer.countdownInterval=setInterval(function(){
     count--;
     if(count>0){
-      phaseBreathEl.innerHTML='<div style="font-size:48px;font-weight:275;color:#d4a373;text-align:center;padding:10px">'+count+'</div><div style="font-size:12px;color:#4a4758;text-align:center">Breathe slowly</div>';
+      phaseBreathEl.innerHTML='<div style="font-size:48px;font-weight:300;color:#d4a373;text-align:center;padding:10px">'+count+'</div><div style="font-size:12px;color:#4a4758;text-align:center">Breathe slowly</div>';
       if(count===1)playBeep();
     }else{
       clearInterval(phasePlayer.countdownInterval);phasePlayer.countdownInterval=null;
@@ -1440,7 +1501,7 @@ function phaseCompleteRoutine(){
   phaseMediaFallback.style.display='block';phaseMediaFallback.innerHTML='✦';phaseMediaFallback.style.fontSize='36px';
   phaseInstructions.textContent='';
   phaseTimerEl.textContent='✦';
-  phaseBreathEl.innerHTML='<p style="font-size:14px;color:#b8bdc7;line-height:1.6;max-width:300px">Adductor release and ankle mobility done for today. Consistency is what rebuilds capacity. See you tomorrow evening.</p>';
+  phaseBreathEl.innerHTML='<p style="font-size:14px;color:var(--text-secondary);line-height:1.6;max-width:300px">Adductor release and ankle mobility done for today. Consistency is what rebuilds capacity. See you tomorrow evening.</p>';
   phaseNextBtn.textContent='Close';
   phaseStepIndicator.textContent=earned>0?('+'+earned+' pts added to Weekly Essence'):'Restorative session complete — no load points';
   renderPhaseCard();
@@ -1488,7 +1549,7 @@ function renderPhaseInsights(){
   const old=document.getElementById('phase-insights-block');if(old)old.remove();
   c.insertAdjacentHTML('beforeend',
     '<div id="phase-insights-block" style="margin-top:10px">'+
-      '<div style="font-size:12px;color:#b8bdc7;margin-bottom:6px">Phase -1 Clinical</div>'+
+      '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px">Phase -1 Clinical</div>'+
       '<div class="insight-row">'+
         '<div class="insight-card"><div class="ic-value" style="font-size:20px">'+phaseStreakThisWeek()+' / 7</div><div class="ic-label">Phase -1 Streak</div></div>'+
         '<div class="insight-card"><div class="ic-value" style="font-size:20px">'+phaseSleepAvg(7)+'</div><div class="ic-label">Sleep Avg (7 days)</div></div>'+
