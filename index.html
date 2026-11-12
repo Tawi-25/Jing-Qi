@@ -222,6 +222,12 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
 .sitting-banner .sb-text{font-size:13px;color:var(--text-secondary);margin-bottom:10px;line-height:1.4}
 .sitting-banner .sb-row{display:flex;gap:8px}
 .sitting-banner .sb-row .btn{flex:1}
+/* === DESK SESSION — manual seated-down timer (JQ-011) === */
+.desk-card [hidden]{display:none!important}
+.desk-card .desk-status{font-size:var(--type-caption-size);line-height:var(--type-caption-line);color:var(--text-secondary);margin-bottom:12px}
+.desk-countdown{display:block;font-size:var(--type-h1-size);font-weight:var(--fw-display);line-height:1;color:var(--gold);font-variant-numeric:tabular-nums;letter-spacing:1px;margin:0 0 14px;transition:color var(--motion)}
+.desk-countdown.is-overdue{color:var(--warning)}
+.desk-alert{font-size:var(--type-caption-size);line-height:var(--type-caption-line);color:var(--warning);background:rgba(217,130,130,0.15);border:1px solid rgba(217,130,130,0.25);border-radius:var(--radius-btn);padding:10px 12px;margin-bottom:12px;animation:fadeIn var(--motion)}
 /* === INSIGHTS === */
 .insight-card{background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:16px;margin-bottom:10px;text-align:center}
 .insight-card .ic-value{font-size:28px;font-weight:var(--fw-display);color:var(--gold);font-variant-numeric:tabular-nums}
@@ -321,6 +327,17 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
         <div class="depleted-msg" id="depleted-msg" style="display:none">Your body has given enough this week. Rest restores your essence.</div>
         <div class="restorative-note" id="restorative-note" style="display:none">Evening restoration — no load points. Restorative practices preserve your recovery capacity.</div>
       </div>
+
+      <!-- DESK SESSION (JQ-011) -->
+      <div class="card desk-card" id="desk-card">
+        <h2>Desk Session</h2>
+        <div class="desk-status" id="desk-status">Not tracking a session. Tap when you sit down.</div>
+        <div class="desk-countdown" id="desk-countdown" hidden>45:00</div>
+        <div class="desk-alert" id="desk-alert" hidden>Time to stand and stretch!</div>
+        <button class="btn btn-primary" id="desk-sit-btn">I'm Sitting Down</button>
+        <button class="btn btn-secondary" id="desk-stand-btn" hidden>I Stood Up</button>
+      </div>
+
       <div style="margin-top:20px;opacity:0.4;text-align:center;font-size:11px;color:#4a4758">Guardian Engine • Listening • Learning</div>
     </div>
 
@@ -632,6 +649,98 @@ document.getElementById('sitting-later').addEventListener('click',function(){
   document.getElementById('sitting-banner').classList.remove('active');
 });
 startSittingTimer();
+
+// === DESK SESSION — manual seated-down timer (JQ-011) ===
+const SIT_KEY='jing_sit_start',SIT_LIMIT_MS=45*60*1000;
+let deskInterval=null,deskAlerted=false;
+const deskStatusEl=document.getElementById('desk-status');
+const deskCountdownEl=document.getElementById('desk-countdown');
+const deskAlertEl=document.getElementById('desk-alert');
+const deskSitBtn=document.getElementById('desk-sit-btn');
+const deskStandBtn=document.getElementById('desk-stand-btn');
+
+function getSitStart(){
+  const raw=localStorage.getItem(SIT_KEY);
+  if(!raw)return null;
+  const t=parseInt(raw,10);
+  if(!isFinite(t)||t<=0||t>Date.now()+60000){localStorage.removeItem(SIT_KEY);return null}
+  return t;
+}
+function formatDeskTime(ms){
+  const total=Math.max(0,Math.ceil(ms/1000)),m=Math.floor(total/60),s=total%60;
+  return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function describeDeskTime(ts){return new Date(ts).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}
+function renderDeskSession(){
+  const start=getSitStart();
+  if(!start){
+    deskStatusEl.textContent='Not tracking a session. Tap when you sit down.';
+    deskCountdownEl.hidden=true;
+    deskCountdownEl.classList.remove('is-overdue');
+    deskAlertEl.hidden=true;
+    deskSitBtn.hidden=false;
+    deskStandBtn.hidden=true;
+    return;
+  }
+  const remaining=SIT_LIMIT_MS-(Date.now()-start);
+  deskCountdownEl.hidden=false;
+  deskCountdownEl.textContent=formatDeskTime(remaining);
+  deskSitBtn.hidden=true;
+  deskStandBtn.hidden=false;
+  if(remaining<=0){
+    deskCountdownEl.classList.add('is-overdue');
+    deskStatusEl.textContent='Seated since '+describeDeskTime(start)+' — 45 minutes up.';
+    deskAlertEl.hidden=false;
+  }else{
+    deskCountdownEl.classList.remove('is-overdue');
+    deskStatusEl.textContent='Seated since '+describeDeskTime(start)+' · stand up at '+describeDeskTime(start+SIT_LIMIT_MS)+'.';
+    deskAlertEl.hidden=true;
+  }
+}
+function notifyStandUp(){
+  try{if(navigator.vibrate)navigator.vibrate([200,100,200])}catch(e){}
+  try{
+    if('Notification'in window&&Notification.permission==='granted'){
+      new Notification('JING · Desk Session',{body:'Time to stand and stretch!',tag:'jing-desk-session'});
+    }
+  }catch(e){}
+}
+function deskTick(){
+  const start=getSitStart();
+  if(!start){stopDeskInterval();renderDeskSession();return}
+  renderDeskSession();
+  if(SIT_LIMIT_MS-(Date.now()-start)<=0&&!deskAlerted){deskAlerted=true;notifyStandUp()}
+}
+function startDeskInterval(){if(!deskInterval)deskInterval=setInterval(deskTick,1000)}
+function stopDeskInterval(){if(deskInterval){clearInterval(deskInterval);deskInterval=null}}
+function startDeskSession(){
+  localStorage.setItem(SIT_KEY,String(Date.now()));
+  deskAlerted=false;
+  renderDeskSession();
+  startDeskInterval();
+  try{
+    if('Notification'in window&&Notification.permission==='default'){
+      const p=Notification.requestPermission();
+      if(p&&p.catch)p.catch(function(){});
+    }
+  }catch(e){}
+}
+function endDeskSession(){
+  localStorage.removeItem(SIT_KEY);
+  deskAlerted=false;
+  stopDeskInterval();
+  renderDeskSession();
+}
+function initDeskSession(){
+  const start=getSitStart();
+  renderDeskSession();
+  if(!start)return;
+  deskAlerted=(SIT_LIMIT_MS-(Date.now()-start))<=0; // cold open: show the state, don't buzz
+  startDeskInterval();
+}
+deskSitBtn.addEventListener('click',startDeskSession);
+deskStandBtn.addEventListener('click',endDeskSession);
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&getSitStart())deskTick()});
 
 // === HISTORY ===
 function getHistory(){try{return JSON.parse(localStorage.getItem('jing_history')||'[]')}catch(e){return[]}}
@@ -1578,6 +1687,7 @@ function vibrate(){try{if(navigator.vibrate)navigator.vibrate(200)}catch(e){}}
 // === INIT ===
 renderCheckins();updateLoadMeter();updateStatus();renderAcupressure();renderLibrary();renderInsights();
 renderPhaseCard();
+initDeskSession();
 
 // === SERVICE WORKER ===
 (function(){if(!('serviceWorker'in navigator))return;var c='jing-v3',gc='jing-gifs-v1',sw=`
