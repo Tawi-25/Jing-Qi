@@ -382,6 +382,15 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
         </div>
 
         <div class="recover-section">
+          <h3>Posture</h3>
+          <div class="recover-card" id="open-desk-breaks">
+            <div class="rc-icon">◇</div>
+            <div class="rc-title">Desk Micro-Breaks</div>
+            <div class="rc-desc">Chin tucks · Wall angels · Exhale rib drop · Back-rib breathing — 3 minutes</div>
+          </div>
+        </div>
+
+        <div class="recover-section">
           <h3>Flare-Up</h3>
           <div class="recover-card flare-btn" id="open-flare-up">
             <div class="rc-icon">⚠</div>
@@ -560,6 +569,10 @@ const CONFIG={
     {id:'four-eight-breath',name:'4-8 Breath',routine:'breathing',target:'Nervous System',equip:'None',diff:'Beginner',load:'qi',duration:120,description:'Extended-exhale breathing to shift into parasympathetic.',gif:'',steps:['Inhale through the nose for 4 counts','Exhale through the mouth for 8 counts','Belly rises on inhale, falls on exhale','10 rounds (about 2 minutes)']},
     {id:'vagal-humming',name:'Vagal Humming',routine:'breathing',target:'Vagus Nerve / Fascia',equip:'None',diff:'Beginner',load:'qi',duration:180,description:'Low hum on the exhale to vibrate the vagus nerve.',gif:'',steps:['Sit or lie with a neutral spine','Inhale through the nose for 4 counts','Exhale with a low, sustained "mmmmmm" hum, 6-8 counts','Feel the vibration in the chest and throat. 8 rounds']},
     {id:'body-scan',name:'Body Scan',routine:'breathing',target:'Proprioception',equip:'None',diff:'Beginner',load:'qi',duration:300,description:'Attention moving through the body, feet to head.',gif:'',steps:['Lie down, eyes closed','Move attention slowly through the body: feet, calves, thighs, hips','Then sacrum, low back, mid back, ribs, chest, shoulders','Arms, hands, neck, jaw, forehead. 5 minutes total']},
+    {id:'chin-tucks',name:'Chin Tucks',routine:'desk-breaks',target:'Neck',equip:'None',diff:'Beginner',load:'qi',duration:30,setup:'Sit tall, shoulders relaxed.',description:'Sit tall, shoulders relaxed.',gif:'',steps:['Glide chin straight back (double chin).','Hold 3 seconds, release.','10 reps.']},
+    {id:'wall-angels',name:'Wall Angels',routine:'desk-breaks',target:'Shoulders & Thoracic',equip:'Wall',diff:'Beginner',load:'qi',duration:45,setup:'Back, head and hips lightly against the wall.',description:'Back against the wall, arms slide overhead without the ribs flaring.',gif:'',steps:['Stand with back, head and hips lightly against the wall','Arms bent to 90°, backs of hands on the wall','Slide the arms slowly overhead, keeping the ribs down and the lower back from arching','Stop before the ribs lift, then lower. 8 slow reps.']},
+    {id:'rib-drop',name:'Exhale Rib Drop',routine:'desk-breaks',target:'Ribcage',equip:'None',diff:'Beginner',load:'qi',duration:30,setup:'Sit or stand tall.',description:'Sit or stand tall.',gif:'',steps:['Inhale deeply.','Exhale forcefully until lungs are empty.','Feel lower ribs drop toward hips.','Do 3 reps.']},
+    {id:'back-rib-breathing',name:'Back-Rib Breathing',routine:'desk-breaks',target:'Posterior Ribcage',equip:'None',diff:'Beginner',load:'qi',duration:60,setup:'Sit tall or lie on your side, hands on the lower back ribs.',description:'Breathe into the backs of the ribs without lifting the sternum.',gif:'',steps:['Sit tall or lie on your side with hands on the lower back ribs','Inhale through the nose, sending the breath into the backs of the ribs','Keep the front ribs and sternum soft — no lifting or flaring','Exhale slowly and fully. 6 slow breaths.']},
   ],
   routines:{
     midday:{label:'Sciatica Flow',time:'Midday · Strength & Stability',exercises:['cat-cow','pelvic-tilt','glute-bridge','bird-dog','dead-bug','clamshell','side-leg-lift'],load:'jing',loadPts:3},
@@ -567,6 +580,7 @@ const CONFIG={
     evening:{label:'The Fascial Unwind',time:'Evening · Restorative floor',exercises:['constructive-rest','legs-up-wall','side-lying-rest','oblique-release','supine-twist','four-eight-breath','body-scan'],load:'qi',loadPts:0},
     breathing:{label:'Guided Breathing',time:'Any time · Nervous system',exercises:['four-eight-breath','vagal-humming','body-scan'],load:'qi',loadPts:0},
     'phase-minus1':{label:'Phase -1 · Adductor & Ankle',time:'Evening · Clinical protocol · 10 min',exercises:['adductor-strap','butterfly','adductor-massage','knee-to-wall','calf-straight','calf-bent'],load:'qi',loadPts:0},
+    'desk-breaks':{label:'Desk Micro-Breaks',time:'Any time · Posture reset · 3 min',exercises:['chin-tucks','wall-angels','rib-drop','back-rib-breathing'],load:'qi',loadPts:0},
   },
   breathPatterns:[
     {name:'Box Breathing',inhale:4,hold1:4,exhale:4,hold2:4,cue:'Breathe in — 4   Hold — 4   Breathe out — 4   Hold — 4'},
@@ -1240,6 +1254,7 @@ let flareState={active:false,phase:0,timerInterval:null,timeRemaining:0};
 const flareOverlay=document.getElementById('flare-overlay'),flareTitle=document.getElementById('flare-title'),flareText=document.getElementById('flare-text'),flareTimer=document.getElementById('flare-timer'),flareProgress=document.getElementById('flare-progress'),flareMedia=document.getElementById('flare-media'),flareNext=document.getElementById('flare-next'),flareExit=document.getElementById('flare-exit');
 
 document.getElementById('open-guided-breathing').addEventListener('click',function(){openRoutine('breathing')});
+document.getElementById('open-desk-breaks').addEventListener('click',function(){openRoutine('desk-breaks')});
 document.getElementById('open-flare-up').addEventListener('click',function(){openFlare()});
 flareNext.addEventListener('click',function(){flareNextPhase()});
 flareExit.addEventListener('click',function(){closeFlare()});
