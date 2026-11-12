@@ -153,7 +153,18 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
 .overlay .btn-row .btn-secondary{flex:0 0 auto;padding:12px 18px;width:auto}
 .overlay .rest-label{font-size:14px;color:var(--text-secondary);margin-bottom:4px}
 .overlay .step-indicator{font-size:12px;color:#4a4758;margin-top:12px}
-.overlay .instructions{font-size:12px;color:#6b6878;max-width:300px;text-align:center;line-height:1.5;margin-bottom:6px;padding:0 10px}
+/* === EXERCISE INFO CARD (JQ-010) — target / setup / action below the media === */
+.overlay .instructions{width:100%;max-width:320px;background:var(--surface-sunken);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:12px 14px;margin:0 0 14px;text-align:left;font-size:var(--type-caption-size);line-height:var(--type-caption-line);color:var(--text-secondary)}
+.overlay .instructions .info-row{display:flex;gap:10px;margin-bottom:8px}
+.overlay .instructions .info-row:last-child{margin-bottom:0}
+.overlay .instructions .info-label{flex:0 0 50px;font-size:var(--type-label-size);line-height:var(--type-caption-line);font-weight:var(--fw-semibold);letter-spacing:0.6px;text-transform:uppercase;color:var(--gold)}
+.overlay .instructions .info-text{flex:1;min-width:0}
+.overlay .instructions .info-steps{margin:0;padding-left:16px}
+.overlay .instructions .info-steps li{margin-bottom:2px}
+.overlay .instructions .info-steps li:last-child{margin-bottom:0}
+.overlay .media-container .media-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;height:100%;padding:20px;text-align:center}
+.overlay .media-container .media-empty-icon{font-size:30px;line-height:1;color:var(--gold);opacity:0.55}
+.overlay .media-container .media-empty-text{font-size:var(--type-caption-size);line-height:var(--type-caption-line);color:var(--text-secondary)}
 .breath-circle{width:120px;height:120px;border-radius:50%;border:2px solid rgba(212,163,115,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;transition:transform 4s ease-in-out,border-color 4s ease-in-out}
 .breath-circle.inhale{transform:scale(1.15);border-color:rgba(212,163,115,0.7)}
 .breath-circle.exhale{transform:scale(0.9);border-color:rgba(212,163,115,0.2)}
@@ -447,7 +458,7 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
     <div class="exercise-name" id="exercise-name">Cat-Cow</div>
     <div class="media-container" id="media-container">
       <div class="media-loading" id="media-loading">◉</div>
-      <img id="media-img" style="display:none" alt="Exercise animation" crossorigin="anonymous">
+      <img id="media-img" style="display:none" alt="Exercise animation">
       <div class="media-fallback" id="media-fallback" style="display:none"></div>
     </div>
     <div class="instructions" id="instructions"></div>
@@ -466,6 +477,7 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
     <div class="exercise-name" id="phase1-name">Phase -1</div>
     <div class="media-container" id="phase1-media-container">
       <div class="media-loading" id="phase1-media-loading">◉</div>
+      <img id="phase1-media-img" style="display:none" alt="Exercise animation">
       <div class="media-fallback" id="phase1-media-fallback" style="display:none"></div>
     </div>
     <div class="instructions" id="phase1-instructions"></div>
@@ -551,10 +563,10 @@ const CONFIG={
     {id:'hamstring-stretch',name:'Supine Hamstring Stretch',routine:'evening',target:'Hamstrings',equip:'Body weight',diff:'Beginner',load:'qi',description:'Lying stretch for the back of the legs.',gif:'',steps:['Lie on back, one leg extended, one leg raised','Hold behind the raised thigh or calf','Gently pull leg toward chest','Hold 30 seconds, switch sides']},
     {id:'piriformis',name:'Piriformis Stretch',routine:'evening',target:'Piriformis',equip:'Body weight',diff:'Beginner',load:'qi',description:'Figure-4 stretch for the deep gluteal muscles.',gif:'',steps:['Lie on back, both knees bent','Cross one ankle over the opposite knee','Gently pull the bottom leg toward you','Hold 30 seconds, switch sides']},
     {id:'adductor-strap',name:'Supine Adductor Stretch',routine:'phase-minus1',target:'Adductors',equip:'Strap',diff:'Beginner',load:'qi',duration:90,switchAt:45,description:'Strap-assisted adductor release on the floor.',gif:'',steps:['Lie on back, loop strap around one foot','Let the leg fall out to the side, knee can be bent','Hold 45 seconds, breathing slowly','Switch sides']},
-    {id:'butterfly',name:'Supported Butterfly',routine:'phase-minus1',target:'Adductors',equip:'Cushions',diff:'Beginner',load:'qi',duration:60,description:'Supported butterfly hold to open the inner hips.',gif:'',steps:['Sit with the soles of the feet together','Rest the knees on cushions so nothing strains','Let the spine soften and lengthen','Hold 60 seconds, breathing slowly']},
+    {id:'butterfly',name:'Supported Butterfly',routine:'phase-minus1',target:'Adductors',equip:'Cushions',diff:'Beginner',load:'qi',duration:60,description:'Supported butterfly hold to open the inner hips.',gif:'assets/gifs/butterfly.gif',steps:['Sit with the soles of the feet together','Rest the knees on cushions so nothing strains','Let the spine soften and lengthen','Hold 60 seconds, breathing slowly']},
     {id:'adductor-massage',name:'Adductor Self-Massage',routine:'phase-minus1',target:'Adductors',equip:'Hands',diff:'Beginner',load:'qi',duration:120,switchAt:60,description:'Slow self-massage along the inner thigh.',gif:'',steps:['Sit or lie with the inner thigh relaxed','Press gently along the adductor from knee toward groin','Work slowly, pausing on tender spots','60 seconds each side']},
     {id:'knee-to-wall',name:'Knee-to-Wall',routine:'phase-minus1',target:'Ankle',equip:'Wall',diff:'Beginner',load:'qi',duration:60,switchAt:30,description:'Ankle dorsiflexion reps measured toward the wall.',gif:'',steps:['Kneel on one knee facing a wall, foot flat','Drive the knee forward toward the wall, heel down','Keep the foot straight, no arch collapse','15 reps each side']},
-    {id:'calf-straight',name:'Calf Stretch — Straight Leg',routine:'phase-minus1',target:'Calf',equip:'Wall',diff:'Beginner',load:'qi',duration:90,switchAt:45,description:'Straight-leg calf stretch for the gastrocnemius.',gif:'',steps:['Stand facing a wall, hands on the wall','Step one leg back, knee straight, heel down','Lean in until the calf lengthens','Hold 45 seconds each side']},
+    {id:'calf-straight',name:'Calf Stretch — Straight Leg',routine:'phase-minus1',target:'Calf',equip:'Wall',diff:'Beginner',load:'qi',duration:90,switchAt:45,description:'Straight-leg calf stretch for the gastrocnemius.',gif:'assets/gifs/calf-straight.gif',steps:['Stand facing a wall, hands on the wall','Step one leg back, knee straight, heel down','Lean in until the calf lengthens','Hold 45 seconds each side']},
     {id:'calf-bent',name:'Calf Stretch — Bent Knee',routine:'phase-minus1',target:'Calf',equip:'Wall',diff:'Beginner',load:'qi',duration:90,switchAt:45,description:'Bent-knee calf stretch to reach the soleus.',gif:'',steps:['Same stance as the straight-leg calf stretch','Bend the back knee while the heel stays down','Keep the hips facing forward','Hold 45 seconds each side']},
     {id:'knees-to-chest-single',name:'Knees to Chest (Single)',routine:'morning',target:'Lower Back',equip:'Body weight',diff:'Beginner',load:'qi',duration:30,description:'Supine single-knee pull to decompress the lumbar spine.',gif:'',steps:['Lie on back, knees bent, feet flat','Pull one knee toward chest, holding the shin','Keep the other foot flat on the floor','Hold 30 seconds, switch sides']},
     {id:'knees-to-chest-double',name:'Knees to Chest (Double)',routine:'morning',target:'Lower Back',equip:'Body weight',diff:'Beginner',load:'qi',duration:30,description:'Supine double-knee pull for lumbar decompression.',gif:'',steps:['Lie on back','Pull both knees toward chest, holding the shins','Let the tailbone lift slightly off the floor','Hold 30 seconds, breathing slowly']},
@@ -945,8 +957,8 @@ function renderLibrary(){
   if(s)exes=exes.filter(e=>e.name.toLowerCase().includes(s)||e.target.toLowerCase().includes(s)||e.description.toLowerCase().includes(s)||(e.routine||'').includes(s));
   if(exes.length===0){c.innerHTML='<div style="text-align:center;padding:30px;color:#4a4758;font-size:13px">No exercises match your search.</div>';return}
   c.innerHTML=exes.map(e=>{
-    const hasGif=e.gif&&e.gif.length>0;
-    const thumb=hasGif?'<img src="'+GIF_BASE+e.gif+'" alt="'+e.name+'" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=\\\'ec-no-gif\\\'>⚡</div>\'">':'<div class="ec-svg">'+bodyDiagramSVG(e.id)+'</div>';
+    const thumbUrl=mediaUrl(e.gif);const hasGif=!!thumbUrl;
+    const thumb=hasGif?'<img src="'+thumbUrl+'" alt="'+e.name+'" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=\\\'ec-no-gif\\\'>⚡</div>\'">':'<div class="ec-svg ec-no-gif">◎</div>';
     const rn=CONFIG.routines[e.routine]?CONFIG.routines[e.routine].label:'';
     return'<div class="exercise-card" data-exercise-id="'+e.id+'"><div class="ec-thumb">'+thumb+'</div><div class="ec-info"><div class="ec-name">'+e.name+' <span style="font-size:10px;color:#4a4758">'+rn+'</span></div><div class="ec-meta"><span>'+e.target+'</span><span>'+e.equip+'</span><span>'+e.diff+'</span></div><div class="ec-desc">'+e.description+'</div></div></div>'
   }).join('');
@@ -1011,13 +1023,34 @@ import('https://cdn.jsdelivr.net/npm/@bryllim/workout-guide@1.0.0/dist/index.js'
   .then(function(m){WG=m;WG_AVAILABLE=true;if(typeof enhanceLibraryThumbs==='function')enhanceLibraryThumbs()})
   .catch(function(e){console.warn('workout-guide unavailable:',e)});
 
-// === SVG DIAGRAMS ===
-function bodyDiagramSVG(exId){return'<svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="8" width="20" height="12" rx="4" fill="none" stroke="#3a3748" stroke-width="1.2"/><circle cx="28" cy="6" r="3.5" fill="none" stroke="#3a3748" stroke-width="1.2"/><rect x="20" y="20" width="16" height="12" rx="3" fill="none" stroke="#3a3748" stroke-width="1.2"/><rect x="22" y="32" width="12" height="6" rx="2" fill="none" stroke="#3a3748" stroke-width="1.2"/><rect x="24" y="38" width="8" height="6" rx="2" fill="none" stroke="#3a3748" stroke-width="1.2"/><line x1="16" y1="22" x2="10" y2="32" stroke="#3a3748" stroke-width="1.2"/><line x1="40" y1="22" x2="46" y2="32" stroke="#3a3748" stroke-width="1.2"/><line x1="16" y1="22" x2="10" y2="12" stroke="#3a3748" stroke-width="1.2"/><line x1="40" y1="22" x2="46" y2="12" stroke="#3a3748" stroke-width="1.2"/></svg>'}
-
-function bodyDiagramMedia(exId){
-  const ex=CONFIG.exercises.find(e=>e.id===exId),target=ex?ex.target:'Body',hColor='rgba(212,163,115,0.3)';
-  return `<svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><style>.b{fill:none;stroke:#4a4758;stroke-width:1.5}.h{fill:${hColor};stroke:#d4a373;stroke-width:1.2}</style><circle cx="50" cy="12" r="7" class="b"/><rect x="35" y="20" width="30" height="20" rx="5" class="b"/><rect x="38" y="40" width="24" height="22" rx="4" class="b"/><rect x="40" y="62" width="20" height="12" rx="3" class="b"/><rect x="42" y="74" width="16" height="12" rx="3" class="b"/><rect x="44" y="86" width="12" height="14" rx="3" class="b"/><line x1="30" y1="42" x2="14" y2="62" class="b"/><line x1="70" y1="42" x2="86" y2="62" class="b"/><line x1="30" y1="42" x2="14" y2="22" class="b"/><line x1="70" y1="42" x2="86" y2="22" class="b"/>${target.includes('Spine')||target.includes('Back')||target==='Lower Back'?'<rect x="42" y="24" width="16" height="40" class="h"/>':''}${target.includes('Glute')||target==='Piriformis'||target.includes('Hip')?'<rect x="40" y="56" width="20" height="16" class="h"/>':''}${target.includes('Hamstring')?'<rect x="42" y="74" width="16" height="12" class="h"/>':''}${target.includes('Core')||target.includes('Oblique')||target.includes('Abdominal')?'<rect x="38" y="40" width="24" height="16" class="h"/>':''}${target.includes('Nerve')?'<rect x="42" y="60" width="16" height="30" class="h"/>':''}<text x="50" y="130" text-anchor="middle" fill="#6b6878" font-size="7" font-family="Urbanist,sans-serif">${target}</text></svg>`;
+// === MEDIA RESOLUTION (JQ-010) — local GIF first, then @bryllim frames, then a clean empty state ===
+function mediaUrl(gif){
+  if(!gif)return '';
+  if(/^https?:\/\//i.test(gif)||gif.charAt(0)==='/'||gif.indexOf('assets/')===0)return gif;
+  return GIF_BASE+gif;
 }
+function escapeText(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function exerciseInfoHTML(ex){
+  if(!ex)return '';
+  let html='';
+  if(ex.target)html+='<div class="info-row"><div class="info-label">Target</div><div class="info-text">'+escapeText(ex.target)+'</div></div>';
+  const setup=ex.setup||ex.description||'';
+  if(setup)html+='<div class="info-row"><div class="info-label">Setup</div><div class="info-text">'+escapeText(setup)+'</div></div>';
+  if(ex.steps&&ex.steps.length)html+='<div class="info-row"><div class="info-label">Action</div><div class="info-text"><ol class="info-steps">'+ex.steps.map(function(s){return '<li>'+escapeText(s)+'</li>'}).join('')+'</ol></div></div>';
+  return html;
+}
+function renderExerciseInfo(el,ex){
+  if(!el)return;
+  const html=exerciseInfoHTML(ex);
+  el.innerHTML=html;
+  el.style.display=html?'block':'none';
+}
+function showMediaEmpty(el){
+  if(!el)return;
+  el.innerHTML='<div class="media-empty"><span class="media-empty-icon">◎</span><span class="media-empty-text">Follow the instructions below.</span></div>';
+  el.style.display='block';
+}
+
 
 // === ROUTINE OVERLAY ===
 let routineState={active:false,exercises:[],currentStep:0,isRest:false,timerInterval:null,breathInterval:null,timeRemaining:0,routineName:'',routineLoadPts:0,isPaused:false};
@@ -1031,22 +1064,23 @@ const overlay=document.getElementById('routine-overlay'),exerciseName=document.g
 function loadMedia(exId){
   unmountAnimation(mediaContainer);
   const ex=CONFIG.exercises.find(e=>e.id===exId);
-  mediaImg.style.display='none';mediaFallback.style.display='none';mediaLoading.style.display='block';instructions.textContent='';
-  if(!ex){mediaLoading.style.display='none';mediaFallback.style.display='block';mediaFallback.textContent='Follow along with the timer.';return}
-  if(ex.steps&&ex.steps.length>0){instructions.textContent='Step: '+ex.steps.join(' · ')}
+  mediaImg.style.display='none';mediaFallback.style.display='none';mediaLoading.style.display='block';
+  renderExerciseInfo(instructions,ex);
+  if(!ex){mediaLoading.style.display='none';showMediaEmpty(mediaFallback);return}
+  const url=mediaUrl(ex.gif);
+  if(url){
+    const img=new Image();if(/^https?:/i.test(url))img.crossOrigin='anonymous';
+    img.onload=function(){mediaLoading.style.display='none';mediaFallback.style.display='none';mediaImg.style.display='block';mediaImg.src=url;if('caches' in window){caches.open('jing-gifs-v1').then(c=>c.add(url).catch(()=>{}))}}
+    img.onerror=function(){mediaLoading.style.display='none';mediaImg.style.display='none';if(WG_AVAILABLE&&WG_MAP[exId]){mountAnimation(mediaContainer,WG_MAP[exId]);return}showMediaEmpty(mediaFallback)}
+    img.src=url;
+    if('caches' in window){caches.match(url).then(r=>{if(r){mediaLoading.style.display='none';mediaFallback.style.display='none';mediaImg.style.display='block';mediaImg.src=url}})}
+    return;
+  }
   if(WG_AVAILABLE){
     const pkg=WG_MAP[exId];
     if(pkg){mountAnimation(mediaContainer,pkg);return}
   }
-  const hasGif=ex.gif&&ex.gif.length>0;
-  if(hasGif){
-    const url=GIF_BASE+ex.gif;
-    const img=new Image();img.crossOrigin='anonymous';
-    img.onload=function(){mediaLoading.style.display='none';mediaImg.style.display='block';mediaImg.src=url;if('caches' in window){caches.open('jing-gifs-v1').then(c=>c.add(url).catch(()=>{}))}}
-    img.onerror=function(){mediaLoading.style.display='none';mediaFallback.innerHTML=bodyDiagramMedia(exId);mediaFallback.style.display='block'}
-    img.src=url;
-    if('caches' in window){caches.match(url).then(r=>{if(r){mediaLoading.style.display='none';mediaImg.style.display='block';mediaImg.src=url}})}
-  }else{mediaLoading.style.display='none';mediaFallback.innerHTML=bodyDiagramMedia(exId);mediaFallback.style.display='block'}
+  mediaLoading.style.display='none';showMediaEmpty(mediaFallback);
 }
 
 function openRoutine(routineKey){
@@ -1507,6 +1541,7 @@ const phaseOverlay=document.getElementById('phase-minus1-overlay'),
       phaseTimerEl=document.getElementById('phase1-timer'),
       phaseBreathEl=document.getElementById('phase1-breath-area'),
       phaseMediaLoading=document.getElementById('phase1-media-loading'),
+      phaseMediaImg=document.getElementById('phase1-media-img'),
       phaseMediaFallback=document.getElementById('phase1-media-fallback'),
       phaseInstructions=document.getElementById('phase1-instructions'),
       phaseStepIndicator=document.getElementById('phase1-step-indicator'),
@@ -1518,16 +1553,23 @@ function phaseMedia(exId){
   unmountAnimation(phaseMediaFallback);
   const ex=CONFIG.exercises.find(e=>e.id===exId);
   phaseMediaFallback.style.fontSize='';
-  phaseMediaLoading.style.display='block';phaseMediaFallback.style.display='none';phaseInstructions.textContent='';
-  if(!ex){phaseMediaLoading.style.display='none';phaseMediaFallback.style.display='block';phaseMediaFallback.textContent='Follow along with the timer.';return}
-  if(ex.steps&&ex.steps.length>0)phaseInstructions.textContent='Step: '+ex.steps.join(' · ');
-  phaseMediaLoading.style.display='none';
+  phaseMediaLoading.style.display='block';phaseMediaFallback.style.display='none';
+  if(phaseMediaImg)phaseMediaImg.style.display='none';
+  renderExerciseInfo(phaseInstructions,ex);
+  if(!ex){phaseMediaLoading.style.display='none';showMediaEmpty(phaseMediaFallback);return}
+  const url=mediaUrl(ex.gif);
+  if(url){
+    const img=new Image();if(/^https?:/i.test(url))img.crossOrigin='anonymous';
+    img.onload=function(){phaseMediaLoading.style.display='none';phaseMediaFallback.style.display='none';phaseMediaImg.style.display='block';phaseMediaImg.src=url}
+    img.onerror=function(){phaseMediaLoading.style.display='none';phaseMediaImg.style.display='none';if(WG_AVAILABLE&&WG_MAP[exId]){mountAnimation(phaseMediaFallback,WG_MAP[exId]);phaseMediaFallback.style.display='block';return}showMediaEmpty(phaseMediaFallback)}
+    img.src=url;
+    return;
+  }
   if(WG_AVAILABLE){
     const pkg=WG_MAP[exId];
     if(pkg){mountAnimation(phaseMediaFallback,pkg);phaseMediaFallback.style.display='block';return}
   }
-  phaseMediaFallback.innerHTML=bodyDiagramMedia(exId);
-  phaseMediaFallback.style.display='block';
+  phaseMediaLoading.style.display='none';showMediaEmpty(phaseMediaFallback);
 }
 function phaseTimerDisplay(s){phaseTimerEl.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 
@@ -1622,8 +1664,9 @@ function phaseCompleteRoutine(){
   phasePlayer.active=false;phasePlayer.paused=false;
   phaseNameEl.textContent='Phase -1 Complete';
   phaseMediaLoading.style.display='none';
+  if(phaseMediaImg)phaseMediaImg.style.display='none';
   phaseMediaFallback.style.display='block';phaseMediaFallback.innerHTML='✦';phaseMediaFallback.style.fontSize='36px';
-  phaseInstructions.textContent='';
+  phaseInstructions.textContent='';phaseInstructions.style.display='none';
   phaseTimerEl.textContent='✦';
   phaseBreathEl.innerHTML='<p style="font-size:14px;color:var(--text-secondary);line-height:1.6;max-width:300px">Adductor release and ankle mobility done for today. Consistency is what rebuilds capacity. See you tomorrow evening.</p>';
   phaseNextBtn.textContent='Close';
