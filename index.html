@@ -141,6 +141,7 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
 .overlay .exercise-name{font-size:20px;font-weight:var(--fw-display);color:var(--gold);margin-bottom:14px;letter-spacing:0.5px}
 .overlay .media-container{width:220px;height:220px;background:var(--surface-sunken);border:1px solid var(--hairline);border-radius:var(--radius-modal);margin-bottom:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
 .overlay .media-container img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius-modal)}
+.overlay .media-container video{width:100%;height:100%;object-fit:contain;display:block;background:#000;border-radius:var(--radius-modal)}
 .exercise-card .ec-thumb .exercise-anim,
 .overlay .media-container .exercise-anim{width:100%;height:100%;object-fit:contain;display:block}
 .overlay .media-container .media-fallback{width:100%;height:100%}
@@ -180,6 +181,7 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
 .exercise-card{background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:14px;margin-bottom:10px;display:flex;gap:14px;align-items:center;transition:background var(--motion),border-color var(--motion),transform var(--motion)}
 .exercise-card .ec-thumb{width:56px;height:56px;border-radius:12px;background:rgba(255,255,255,0.03);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .exercise-card .ec-thumb img{width:100%;height:100%;object-fit:cover}
+.exercise-card .ec-thumb video{width:100%;height:100%;object-fit:cover;display:block}
 .exercise-card .ec-thumb .ec-no-gif{font-size:20px;color:#3a3748}
 .exercise-card .ec-thumb .ec-svg{width:100%;height:100%;padding:4px}
 .exercise-card .ec-thumb .ec-svg svg{width:100%;height:100%}
@@ -239,6 +241,9 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
 .desk-countdown{display:block;font-size:var(--type-h1-size);font-weight:var(--fw-display);line-height:1;color:var(--gold);font-variant-numeric:tabular-nums;letter-spacing:1px;margin:0 0 14px;transition:color var(--motion)}
 .desk-countdown.is-overdue{color:var(--warning)}
 .desk-alert{font-size:var(--type-caption-size);line-height:var(--type-caption-line);color:var(--warning);background:rgba(217,130,130,0.15);border:1px solid rgba(217,130,130,0.25);border-radius:var(--radius-btn);padding:10px 12px;margin-bottom:12px;animation:fadeIn var(--motion)}
+/* === TAI CHI MODE (JQ-018b) === */
+.tai-chi-card h2{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tc-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:var(--radius-pill);background:var(--gold-soft);border:1px solid rgba(212,163,115,0.35);color:var(--gold);font-size:9.5px;font-weight:var(--fw-semibold);letter-spacing:0.08em;text-transform:uppercase;line-height:1.7}
 /* === INSIGHTS === */
 .insight-card{background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:16px;margin-bottom:10px;text-align:center}
 .insight-card .ic-value{font-size:28px;font-weight:var(--fw-display);color:var(--gold);font-variant-numeric:tabular-nums}
@@ -329,6 +334,13 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
         <div class="status-pill yellow" id="status-pill">Yin Day — Restore</div>
         <div class="routine-name" id="routine-name">The 5-Floor Ascent</div>
         <div class="routine-time" id="routine-time">Morning · Gentle standing · 4 minutes</div>
+      </div>
+
+      <!-- TAI CHI MODE (JQ-018b) -->
+      <div class="card tai-chi-card" id="tai-chi-card">
+        <h2>Full Tai Chi Flow <span class="tc-badge">Video · 18 min</span></h2>
+        <div class="desk-status">A continuous, moving meditation.</div>
+        <button class="btn btn-primary" id="tai-chi-start">Start Tai Chi Flow</button>
       </div>
 
       <div class="card action-card" id="action-card">
@@ -459,6 +471,7 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
     <div class="media-container" id="media-container">
       <div class="media-loading" id="media-loading">◉</div>
       <img id="media-img" style="display:none" alt="Exercise animation">
+      <video id="media-video" class="media-video" muted playsinline preload="metadata" style="display:none"></video>
       <div class="media-fallback" id="media-fallback" style="display:none"></div>
     </div>
     <div class="instructions" id="instructions"></div>
@@ -585,6 +598,7 @@ const CONFIG={
     {id:'wall-angels',name:'Wall Angels',routine:'desk-breaks',target:'Shoulders & Thoracic',equip:'Wall',diff:'Beginner',load:'qi',duration:45,setup:'Back, head and hips lightly against the wall.',description:'Back against the wall, arms slide overhead without the ribs flaring.',gif:'',steps:['Stand with back, head and hips lightly against the wall','Arms bent to 90°, backs of hands on the wall','Slide the arms slowly overhead, keeping the ribs down and the lower back from arching','Stop before the ribs lift, then lower. 8 slow reps.']},
     {id:'rib-drop',name:'Exhale Rib Drop',routine:'desk-breaks',target:'Ribcage',equip:'None',diff:'Beginner',load:'qi',duration:30,setup:'Sit or stand tall.',description:'Sit or stand tall.',gif:'',steps:['Inhale deeply.','Exhale forcefully until lungs are empty.','Feel lower ribs drop toward hips.','Do 3 reps.']},
     {id:'back-rib-breathing',name:'Back-Rib Breathing',routine:'desk-breaks',target:'Posterior Ribcage',equip:'None',diff:'Beginner',load:'qi',duration:60,setup:'Sit tall or lie on your side, hands on the lower back ribs.',description:'Breathe into the backs of the ribs without lifting the sternum.',gif:'',steps:['Sit tall or lie on your side with hands on the lower back ribs','Inhale through the nose, sending the breath into the backs of the ribs','Keep the front ribs and sternum soft — no lifting or flaring','Exhale slowly and fully. 6 slow breaths.']},
+    {id:'taiChiFull',name:'Full Tai Chi Flow',routine:'taiChiFlow',target:'Tai Chi',equip:'Follow the video',diff:'Beginner',load:'qi',duration:1080,setup:'Follow the instructor. High stances, deep breath.',description:'A continuous, moving meditation.',gif:'',video:'assets/media/TaiChi.m4v',steps:['Start the video.','Follow the continuous flow.']},
   ],
   routines:{
     midday:{label:'Sciatica Flow',time:'Midday · Strength & Stability',exercises:['cat-cow','pelvic-tilt','glute-bridge','bird-dog','dead-bug','clamshell','side-leg-lift'],load:'jing',loadPts:3},
@@ -593,6 +607,7 @@ const CONFIG={
     breathing:{label:'Guided Breathing',time:'Any time · Nervous system',exercises:['four-eight-breath','vagal-humming','body-scan'],load:'qi',loadPts:0},
     'phase-minus1':{label:'Phase -1 · Adductor & Ankle',time:'Evening · Clinical protocol · 10 min',exercises:['adductor-strap','butterfly','adductor-massage','knee-to-wall','calf-straight','calf-bent'],load:'qi',loadPts:0},
     'desk-breaks':{label:'Desk Micro-Breaks',time:'Any time · Posture reset · 3 min',exercises:['chin-tucks','wall-angels','rib-drop','back-rib-breathing'],load:'qi',loadPts:0},
+    taiChiFlow:{label:'Full Tai Chi Flow',time:'18 min video · Daily / Mobility',exercises:['taiChiFull'],load:'qi',loadPts:0},
   },
   breathPatterns:[
     {name:'Box Breathing',inhale:4,hold1:4,exhale:4,hold2:4,cue:'Breathe in — 4   Hold — 4   Breathe out — 4   Hold — 4'},
@@ -958,7 +973,7 @@ function renderLibrary(){
   if(exes.length===0){c.innerHTML='<div style="text-align:center;padding:30px;color:#4a4758;font-size:13px">No exercises match your search.</div>';return}
   c.innerHTML=exes.map(e=>{
     const thumbUrl=mediaUrl(e.gif);const hasGif=!!thumbUrl;
-    const thumb=hasGif?'<img src="'+thumbUrl+'" alt="'+e.name+'" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=\\\'ec-no-gif\\\'>⚡</div>\'">':'<div class="ec-svg ec-no-gif">◎</div>';
+    const thumb=e.video?'<video class="ec-video" src="'+e.video+'" muted playsinline preload="metadata" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=\\\'ec-no-gif\\\'>◎</div>\'"></video>':(hasGif?'<img src="'+thumbUrl+'" alt="'+e.name+'" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=\\\'ec-no-gif\\\'>⚡</div>\'">':'<div class="ec-svg ec-no-gif">◎</div>');
     const rn=CONFIG.routines[e.routine]?CONFIG.routines[e.routine].label:'';
     return'<div class="exercise-card" data-exercise-id="'+e.id+'"><div class="ec-thumb">'+thumb+'</div><div class="ec-info"><div class="ec-name">'+e.name+' <span style="font-size:10px;color:#4a4758">'+rn+'</span></div><div class="ec-meta"><span>'+e.target+'</span><span>'+e.equip+'</span><span>'+e.diff+'</span></div><div class="ec-desc">'+e.description+'</div></div></div>'
   }).join('');
@@ -1057,30 +1072,97 @@ let routineState={active:false,exercises:[],currentStep:0,isRest:false,timerInte
 const overlay=document.getElementById('routine-overlay'),exerciseName=document.getElementById('exercise-name'),
       exerciseTimer=document.getElementById('exercise-timer'),breathArea=document.getElementById('breath-area'),
       mediaContainer=document.getElementById('media-container'),mediaImg=document.getElementById('media-img'),
+      mediaVideo=document.getElementById('media-video'),
       mediaLoading=document.getElementById('media-loading'),mediaFallback=document.getElementById('media-fallback'),
       stepIndicator=document.getElementById('step-indicator'),nextBtn=document.getElementById('next-exercise-btn'),
       closeBtn=document.getElementById('close-routine-btn'),instructions=document.getElementById('instructions');
+/** Guards async media callbacks against a newer exercise being loaded. */
+let mediaToken=0;
+
+/** Local clip for an exercise: the Tai Chi film is the one file with a bespoke name. */
+function videoSrc(exId){
+  const ex=CONFIG.exercises.find(e=>e.id===exId);
+  if(ex&&ex.video)return ex.video;
+  return exId==='taiChiFull'?'assets/media/TaiChi.m4v':('assets/media/'+exId+'.mp4');
+}
+
+function resetMediaVideo(){
+  if(!mediaVideo)return;
+  mediaVideo.onerror=null;mediaVideo.onloadeddata=null;
+  try{mediaVideo.pause()}catch(e){}
+  mediaVideo.removeAttribute('src');
+  mediaVideo.removeAttribute('autoplay');
+  mediaVideo.style.display='none';
+  try{mediaVideo.load()}catch(e){}
+}
+
+/** Play the local clip; on any failure hands control to the still-image chain. */
+function playMediaVideo(exId,token,onFail){
+  if(!mediaVideo){onFail();return}
+  const isTaiChi=exId==='taiChiFull';
+  let settled=false;
+  const fail=function(){
+    if(settled)return;
+    settled=true;
+    if(token!==mediaToken)return;
+    resetMediaVideo();
+    onFail();
+  };
+  mediaVideo.onloadeddata=function(){
+    if(settled)return;
+    settled=true;
+    if(token!==mediaToken)return;
+    mediaLoading.style.display='none';mediaFallback.style.display='none';mediaImg.style.display='none';
+    mediaVideo.style.display='block';
+  };
+  mediaVideo.onerror=fail;
+  mediaVideo.loop=!isTaiChi;
+  mediaVideo.muted=true;
+  mediaVideo.playsInline=true;
+  mediaVideo.setAttribute('autoplay','');
+  mediaVideo.src=videoSrc(exId);
+  const started=mediaVideo.play();
+  if(started&&started.catch)started.catch(function(){});
+  window.setTimeout(function(){if(!settled)fail()},5000);
+}
+
+/** Still-image chain: local/OOTB GIF, then @bryllim frames, then the clean empty state. */
+function showStillMedia(exId,token){
+  const ex=CONFIG.exercises.find(e=>e.id===exId);
+  const url=mediaUrl(ex&&ex.gif);
+  if(url){
+    const img=new Image();if(/^https?:/i.test(url))img.crossOrigin='anonymous';
+    img.onload=function(){
+      if(token!==mediaToken)return;
+      mediaLoading.style.display='none';mediaFallback.style.display='none';mediaImg.style.display='block';mediaImg.src=url;
+      if('caches' in window){caches.open('jing-gifs-v1').then(c=>c.add(url).catch(()=>{}))}
+    };
+    img.onerror=function(){
+      if(token!==mediaToken)return;
+      mediaLoading.style.display='none';mediaImg.style.display='none';
+      if(WG_AVAILABLE&&WG_MAP[exId]){mountAnimation(mediaContainer,WG_MAP[exId]);return}
+      showMediaEmpty(mediaFallback);
+    };
+    img.src=url;
+    if('caches' in window){caches.match(url).then(r=>{
+      if(token!==mediaToken)return;
+      if(r){mediaLoading.style.display='none';mediaFallback.style.display='none';mediaImg.style.display='block';mediaImg.src=url}
+    })}
+    return;
+  }
+  if(WG_AVAILABLE&&WG_MAP[exId]){mountAnimation(mediaContainer,WG_MAP[exId]);mediaLoading.style.display='none';return}
+  mediaLoading.style.display='none';showMediaEmpty(mediaFallback);
+}
 
 function loadMedia(exId){
+  const token=++mediaToken;
   unmountAnimation(mediaContainer);
+  resetMediaVideo();
   const ex=CONFIG.exercises.find(e=>e.id===exId);
   mediaImg.style.display='none';mediaFallback.style.display='none';mediaLoading.style.display='block';
   renderExerciseInfo(instructions,ex);
   if(!ex){mediaLoading.style.display='none';showMediaEmpty(mediaFallback);return}
-  const url=mediaUrl(ex.gif);
-  if(url){
-    const img=new Image();if(/^https?:/i.test(url))img.crossOrigin='anonymous';
-    img.onload=function(){mediaLoading.style.display='none';mediaFallback.style.display='none';mediaImg.style.display='block';mediaImg.src=url;if('caches' in window){caches.open('jing-gifs-v1').then(c=>c.add(url).catch(()=>{}))}}
-    img.onerror=function(){mediaLoading.style.display='none';mediaImg.style.display='none';if(WG_AVAILABLE&&WG_MAP[exId]){mountAnimation(mediaContainer,WG_MAP[exId]);return}showMediaEmpty(mediaFallback)}
-    img.src=url;
-    if('caches' in window){caches.match(url).then(r=>{if(r){mediaLoading.style.display='none';mediaFallback.style.display='none';mediaImg.style.display='block';mediaImg.src=url}})}
-    return;
-  }
-  if(WG_AVAILABLE){
-    const pkg=WG_MAP[exId];
-    if(pkg){mountAnimation(mediaContainer,pkg);return}
-  }
-  mediaLoading.style.display='none';showMediaEmpty(mediaFallback);
+  playMediaVideo(exId,token,function(){showStillMedia(exId,token)});
 }
 
 function openRoutine(routineKey){
@@ -1112,6 +1194,10 @@ function showCountdown(callback){
       clearInterval(ci);
       vibrate();
       pauseBtn.style.display='';
+      breathArea.innerHTML='';
+      const curId=routineState.exercises[routineState.currentStep];
+      const curEx=CONFIG.exercises.find(e=>e.id===curId);
+      exerciseName.textContent=curEx?curEx.name:'Movement';
       callback();
     }
   },800);
@@ -1145,6 +1231,7 @@ function updateTimerDisplay(s){exerciseTimer.textContent=String(Math.floor(s/60)
 
 function startRest(){
   routineState.isRest=true;
+  resetMediaVideo();
   const pattern=CONFIG.breathPatterns[CONFIG._breathIndex%CONFIG.breathPatterns.length];CONFIG._breathIndex++;
   exerciseName.textContent='Breathe — '+pattern.name;nextBtn.textContent='Skip Rest';
   breathArea.innerHTML='<div class="breath-pattern">'+pattern.cue+'</div><div class="breath-circle" id="breath-circle"><span class="breath-text" id="breath-text">Inhale</span></div>';
@@ -1169,6 +1256,7 @@ function completeRoutine(){
   if(loadEarned>0){const c=getWeeklyLoad();setWeeklyLoad(c+loadEarned)}
   addHistoryEntry(routineState.routineName,loadEarned,routineState.routineName);
   exerciseName.textContent='Recovery Complete';
+  resetMediaVideo();
   mediaImg.style.display='none';mediaLoading.style.display='none';mediaFallback.style.display='block';mediaFallback.textContent='✦';mediaFallback.style.fontSize='36px';
   exerciseTimer.textContent='✦';
   breathArea.innerHTML='<p style="font-size:14px;color:var(--text-secondary);line-height:1.6;max-width:300px">Your body has received today\'s movement. Well done. Consistency builds resilience. See you tomorrow.</p>';
@@ -1182,6 +1270,7 @@ function closeRoutine(){
   else if(routineState.active&&routineState.isRest)setSavedStep(routineState.currentStep);
   else clearSavedStep();
   routineState.active=false;overlay.classList.remove('active');
+  resetMediaVideo();
   document.getElementById('main-content').style.display='';document.querySelector('nav.bottom-nav').style.display='';document.querySelector('header').style.display='';
   updateLoadMeter();mediaFallback.style.fontSize='';
 }
@@ -1289,6 +1378,7 @@ const flareOverlay=document.getElementById('flare-overlay'),flareTitle=document.
 
 document.getElementById('open-guided-breathing').addEventListener('click',function(){openRoutine('breathing')});
 document.getElementById('open-desk-breaks').addEventListener('click',function(){openRoutine('desk-breaks')});
+document.getElementById('tai-chi-start').addEventListener('click',function(){openRoutine('taiChiFlow')});
 document.getElementById('open-flare-up').addEventListener('click',function(){openFlare()});
 flareNext.addEventListener('click',function(){flareNextPhase()});
 flareExit.addEventListener('click',function(){closeFlare()});
