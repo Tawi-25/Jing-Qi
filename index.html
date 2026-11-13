@@ -179,9 +179,10 @@ nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 a
 .filter-chip{padding:5px 12px;border-radius:var(--radius-pill);border:1px solid var(--hairline);background:var(--surface-sunken);color:var(--text-secondary);font-family:var(--font-sans);font-size:var(--type-label-size);line-height:var(--type-label-line);font-weight:var(--fw-semibold);cursor:pointer;transition:background var(--motion),color var(--motion),border-color var(--motion)}
 .filter-chip.active{background:var(--gold-soft);border-color:rgba(212,163,115,0.35);color:var(--gold)}
 .exercise-card{background:var(--surface);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--hairline);border-radius:var(--radius-card);padding:14px;margin-bottom:10px;display:flex;gap:14px;align-items:center;transition:background var(--motion),border-color var(--motion),transform var(--motion)}
-.exercise-card .ec-thumb{width:56px;height:56px;border-radius:12px;background:rgba(255,255,255,0.03);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.exercise-card .ec-thumb{position:relative;width:56px;height:56px;border-radius:12px;background:rgba(255,255,255,0.03);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .exercise-card .ec-thumb img{width:100%;height:100%;object-fit:cover}
-.exercise-card .ec-thumb video{width:100%;height:100%;object-fit:cover;display:block}
+.exercise-card .ec-thumb video{width:100%;height:100%;object-fit:cover;display:block;background:#15121F}
+.exercise-card .ec-thumb .ec-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:rgba(15,14,19,0.72);border:1px solid rgba(212,163,115,0.45);color:var(--gold);font-size:8px;line-height:1;padding-left:1px;pointer-events:none}
 .exercise-card .ec-thumb .ec-no-gif{font-size:20px;color:#3a3748}
 .exercise-card .ec-thumb .ec-svg{width:100%;height:100%;padding:4px}
 .exercise-card .ec-thumb .ec-svg svg{width:100%;height:100%}
@@ -965,15 +966,6 @@ function switchView(name){document.querySelectorAll('.view').forEach(v=>v.classL
 
 // === LIBRARY ===
 let libFilter='all',libSearch='';
-/** Kicks the mapped clip thumbnails into playback; muted autoplay is allowed everywhere. */
-function startLibraryVideos(list){
-  if(!list)return;
-  const vids=list.querySelectorAll('video');
-  for(let i=0;i<vids.length;i++){
-    const p=vids[i].play();
-    if(p&&p.catch)p.catch(function(){});
-  }
-}
 function renderLibrary(){
   const c=document.getElementById('library-list'),s=libSearch.toLowerCase().trim();
   let exes=CONFIG.exercises;
@@ -983,11 +975,11 @@ function renderLibrary(){
   c.innerHTML=exes.map(e=>{
     const thumbUrl=mediaUrl(e.gif);const hasGif=!!thumbUrl;
     const vFile=VIDEO_MAP[e.id];
-    const thumb=vFile?'<video class="ec-video" src="assets/media/'+vFile+'" muted playsinline autoplay loop preload="auto" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=\\\'ec-no-gif\\\'>◎</div>\'"></video>':(hasGif?'<img src="'+thumbUrl+'" alt="'+e.name+'" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=\\\'ec-no-gif\\\'>⚡</div>\'">':'<div class="ec-svg ec-no-gif">◎</div>');
+    const thumb=vFile?'<video class="ec-video" src="assets/media/'+vFile+'" muted playsinline preload="metadata" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=\\\'ec-no-gif\\\'>◎</div>\'"></video><span class="ec-play" aria-hidden="true">▶</span>':(hasGif?'<img src="'+thumbUrl+'" alt="'+e.name+'" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=\\\'ec-no-gif\\\'>⚡</div>\'">':'<div class="ec-svg ec-no-gif">◎</div>');
     const rn=CONFIG.routines[e.routine]?CONFIG.routines[e.routine].label:'';
     return'<div class="exercise-card" data-exercise-id="'+e.id+'"><div class="ec-thumb">'+thumb+'</div><div class="ec-info"><div class="ec-name">'+e.name+' <span style="font-size:10px;color:#4a4758">'+rn+'</span></div><div class="ec-meta"><span>'+e.target+'</span><span>'+e.equip+'</span><span>'+e.diff+'</span></div><div class="ec-desc">'+e.description+'</div></div></div>'
   }).join('');
-  requestAnimationFrame(function(){enhanceLibraryThumbs();startLibraryVideos(c)});
+  requestAnimationFrame(enhanceLibraryThumbs);
 }
 document.getElementById('library-search').addEventListener('input',function(){libSearch=this.value;renderLibrary()});
 document.getElementById('filter-row').addEventListener('click',function(e){const chip=e.target.closest('.filter-chip');if(!chip)return;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');libFilter=chip.dataset.filter;renderLibrary()});
@@ -1168,8 +1160,7 @@ const VIDEO_MAP = {
   'glute-bridge': 'bridge.mp4',
   'thoracic-rotation': 'thoracic.mp4',
   'hip-flexor': 'hipFlexorStretch.mp4',
-  'piriformis': 'lyingGluteStretch.mp4',
-  'quad-set': 'standingQuadStretch.mp4',
+  'benchLat': 'benchLat.mp4',
   'doorway-chest-stretch': 'lowDoorway.mp4',
   'open-book': 'openBook.mp4',
   'sit-to-stand': 'sitStand.mp4',
