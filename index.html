@@ -598,7 +598,7 @@ const CONFIG={
     {id:'wall-angels',name:'Wall Angels',routine:'desk-breaks',target:'Shoulders & Thoracic',equip:'Wall',diff:'Beginner',load:'qi',duration:45,setup:'Back, head and hips lightly against the wall.',description:'Back against the wall, arms slide overhead without the ribs flaring.',gif:'',steps:['Stand with back, head and hips lightly against the wall','Arms bent to 90°, backs of hands on the wall','Slide the arms slowly overhead, keeping the ribs down and the lower back from arching','Stop before the ribs lift, then lower. 8 slow reps.']},
     {id:'rib-drop',name:'Exhale Rib Drop',routine:'desk-breaks',target:'Ribcage',equip:'None',diff:'Beginner',load:'qi',duration:30,setup:'Sit or stand tall.',description:'Sit or stand tall.',gif:'',steps:['Inhale deeply.','Exhale forcefully until lungs are empty.','Feel lower ribs drop toward hips.','Do 3 reps.']},
     {id:'back-rib-breathing',name:'Back-Rib Breathing',routine:'desk-breaks',target:'Posterior Ribcage',equip:'None',diff:'Beginner',load:'qi',duration:60,setup:'Sit tall or lie on your side, hands on the lower back ribs.',description:'Breathe into the backs of the ribs without lifting the sternum.',gif:'',steps:['Sit tall or lie on your side with hands on the lower back ribs','Inhale through the nose, sending the breath into the backs of the ribs','Keep the front ribs and sternum soft — no lifting or flaring','Exhale slowly and fully. 6 slow breaths.']},
-    {id:'taiChiFull',name:'Full Tai Chi Flow',routine:'taiChiFlow',target:'Tai Chi',equip:'Follow the video',diff:'Beginner',load:'qi',duration:1080,setup:'Follow the instructor. High stances, deep breath.',description:'A continuous, moving meditation.',gif:'',video:'assets/media/TaiChi.m4v',steps:['Start the video.','Follow the continuous flow.']},
+    {id:'taiChiFull',name:'Full Tai Chi Flow',routine:'taiChiFlow',target:'Tai Chi',equip:'Follow the video',diff:'Beginner',load:'qi',duration:1080,setup:'Follow the instructor. High stances, deep breath.',description:'A continuous, moving meditation.',gif:'',steps:['Start the video.','Follow the continuous flow.']},
   ],
   routines:{
     midday:{label:'Sciatica Flow',time:'Midday · Strength & Stability',exercises:['cat-cow','pelvic-tilt','glute-bridge','bird-dog','dead-bug','clamshell','side-leg-lift'],load:'jing',loadPts:3},
@@ -965,6 +965,15 @@ function switchView(name){document.querySelectorAll('.view').forEach(v=>v.classL
 
 // === LIBRARY ===
 let libFilter='all',libSearch='';
+/** Kicks the mapped clip thumbnails into playback; muted autoplay is allowed everywhere. */
+function startLibraryVideos(list){
+  if(!list)return;
+  const vids=list.querySelectorAll('video');
+  for(let i=0;i<vids.length;i++){
+    const p=vids[i].play();
+    if(p&&p.catch)p.catch(function(){});
+  }
+}
 function renderLibrary(){
   const c=document.getElementById('library-list'),s=libSearch.toLowerCase().trim();
   let exes=CONFIG.exercises;
@@ -973,11 +982,12 @@ function renderLibrary(){
   if(exes.length===0){c.innerHTML='<div style="text-align:center;padding:30px;color:#4a4758;font-size:13px">No exercises match your search.</div>';return}
   c.innerHTML=exes.map(e=>{
     const thumbUrl=mediaUrl(e.gif);const hasGif=!!thumbUrl;
-    const thumb=e.video?'<video class="ec-video" src="'+e.video+'" muted playsinline preload="metadata" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=\\\'ec-no-gif\\\'>◎</div>\'"></video>':(hasGif?'<img src="'+thumbUrl+'" alt="'+e.name+'" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=\\\'ec-no-gif\\\'>⚡</div>\'">':'<div class="ec-svg ec-no-gif">◎</div>');
+    const vFile=VIDEO_MAP[e.id];
+    const thumb=vFile?'<video class="ec-video" src="assets/media/'+vFile+'" muted playsinline autoplay loop preload="auto" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=\\\'ec-no-gif\\\'>◎</div>\'"></video>':(hasGif?'<img src="'+thumbUrl+'" alt="'+e.name+'" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<div class=\\\'ec-no-gif\\\'>⚡</div>\'">':'<div class="ec-svg ec-no-gif">◎</div>');
     const rn=CONFIG.routines[e.routine]?CONFIG.routines[e.routine].label:'';
     return'<div class="exercise-card" data-exercise-id="'+e.id+'"><div class="ec-thumb">'+thumb+'</div><div class="ec-info"><div class="ec-name">'+e.name+' <span style="font-size:10px;color:#4a4758">'+rn+'</span></div><div class="ec-meta"><span>'+e.target+'</span><span>'+e.equip+'</span><span>'+e.diff+'</span></div><div class="ec-desc">'+e.description+'</div></div></div>'
   }).join('');
-  requestAnimationFrame(enhanceLibraryThumbs);
+  requestAnimationFrame(function(){enhanceLibraryThumbs();startLibraryVideos(c)});
 }
 document.getElementById('library-search').addEventListener('input',function(){libSearch=this.value;renderLibrary()});
 document.getElementById('filter-row').addEventListener('click',function(e){const chip=e.target.closest('.filter-chip');if(!chip)return;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');libFilter=chip.dataset.filter;renderLibrary()});
@@ -1079,11 +1089,9 @@ const overlay=document.getElementById('routine-overlay'),exerciseName=document.g
 /** Guards async media callbacks against a newer exercise being loaded. */
 let mediaToken=0;
 
-/** Local clip for an exercise: the Tai Chi film is the one file with a bespoke name. */
+/** Local clip for an exercise: mapped filenames first, `<id>.mp4` as the fallback. */
 function videoSrc(exId){
-  const ex=CONFIG.exercises.find(e=>e.id===exId);
-  if(ex&&ex.video)return ex.video;
-  return exId==='taiChiFull'?'assets/media/TaiChi.m4v':('assets/media/'+exId+'.mp4');
+  return 'assets/media/' + (VIDEO_MAP[exId] || exId + '.mp4');
 }
 
 function resetMediaVideo(){
@@ -1153,6 +1161,25 @@ function showStillMedia(exId,token){
   if(WG_AVAILABLE&&WG_MAP[exId]){mountAnimation(mediaContainer,WG_MAP[exId]);mediaLoading.style.display='none';return}
   mediaLoading.style.display='none';showMediaEmpty(mediaFallback);
 }
+
+/** Downloaded clip filenames → the app's exercise ids (JQ-019). */
+const VIDEO_MAP = {
+  'taiChiFull': 'TaiChi.m4v',
+  'glute-bridge': 'bridge.mp4',
+  'thoracic-rotation': 'thoracic.mp4',
+  'hip-flexor': 'hipFlexorStretch.mp4',
+  'piriformis': 'lyingGluteStretch.mp4',
+  'quad-set': 'standingQuadStretch.mp4',
+  'doorway-chest-stretch': 'lowDoorway.mp4',
+  'open-book': 'openBook.mp4',
+  'sit-to-stand': 'sitStand.mp4',
+  'step-down': 'stepDown.mp4',
+  'eccentric-biceps-curl': 'eccCurl.mp4',
+  'band-row': 'band-row.mp4',
+  'band-squat': 'band-squat.mp4',
+  'band-rdl': 'band-rdl.mp4',
+  'band-chest-press': 'band-chest-press.mp4',
+};
 
 function loadMedia(exId){
   const token=++mediaToken;
